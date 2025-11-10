@@ -1,0 +1,186 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ======================================================
+// Prisma Schema untuk Learning Target & AI Learning Insight
+// ======================================================
+
+model users {
+  id                      Int       @id @default(autoincrement())
+  display_name            String? 
+  name                    String?
+  email                   String?   @unique
+  phone                   String?
+  user_role               String?
+  user_verification_status Boolean?
+  created_at              DateTime? @default(now())
+  updated_at              DateTime? @updatedAt
+  city                    String?
+
+  // Relasi
+  instructor_journeys     developer_journeys[] @relation("InstructorJourneys")
+  reviewer_journeys       developer_journeys[] @relation("ReviewerJourneys")
+  authored_tutorials      developer_journey_tutorials[] @relation("AuthorTutorials")
+  trackings               developer_journey_trackings[]
+  submissions             developer_journey_submissions[] @relation("SubmitterSubmissions")
+  reviewed_submissions    developer_journey_submissions[] @relation("ReviewerSubmissions")
+  completions             developer_journey_completions[]
+  exam_registrations      exam_registrations[] 
+}
+
+
+
+model developer_journeys {
+  id              Int       @id @default(autoincrement())
+  name            String?
+  summary         String?
+  point           Int?
+  required_point  Int?
+  xp              Int?
+  required_xp     Int?
+  difficulty      String?
+  status          String?
+  created_at      DateTime? @default(now())
+  updated_at      DateTime? @updatedAt
+
+  // Foreign Keys
+  instructor_id   Int?
+  reviewer_id     Int?
+  instructor      users? @relation("InstructorJourneys", fields: [instructor_id], references: [id])
+  reviewer        users? @relation("ReviewerJourneys", fields: [reviewer_id], references: [id])
+
+  // Relasi
+  tutorials       developer_journey_tutorials[]
+  trackings       developer_journey_trackings[]
+  submissions     developer_journey_submissions[]
+  completions     developer_journey_completions[]
+}
+
+
+
+model developer_journey_tutorials {
+  id                    Int       @id @default(autoincrement())
+  developer_journey_id  Int?
+  title                 String?
+  type                  String?
+  content               String?
+  position              Int?
+  status                String?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+  author_id             Int?
+
+  // Foreign Keys
+  journey   developer_journeys? @relation(fields: [developer_journey_id], references: [id])
+  author    users?              @relation("AuthorTutorials", fields: [author_id], references: [id])
+
+  // Relasi
+  trackings developer_journey_trackings[]
+  submissions developer_journey_submissions[]
+  exam_registrations exam_registrations[]
+}
+
+
+
+model developer_journey_trackings {
+  id              Int       @id @default(autoincrement())
+  journey_id      Int?
+  tutorial_id     Int?
+  developer_id    Int?
+  status          String?
+  last_viewed     DateTime?
+  first_opened_at DateTime?
+  completed_at    DateTime?
+
+  // Foreign Keys
+  journey   developer_journeys? @relation(fields: [journey_id], references: [id])
+  tutorial  developer_journey_tutorials? @relation(fields: [tutorial_id], references: [id])
+  developer users? @relation(fields: [developer_id], references: [id])
+}
+
+
+
+model developer_journey_submissions {
+  id            Int       @id @default(autoincrement())
+  journey_id    Int?
+  quiz_id       Int?
+  submitter_id  Int?
+  app_link      String?
+  app_comment   String?
+  status        String?
+  reviewer_id   Int?
+  rating        Int?
+  note          String?
+  created_at    DateTime? @default(now())
+  updated_at    DateTime? @updatedAt
+
+  // Foreign Keys
+  journey   developer_journeys? @relation(fields: [journey_id], references: [id])
+  quiz      developer_journey_tutorials? @relation(fields: [quiz_id], references: [id])
+  submitter users? @relation("SubmitterSubmissions", fields: [submitter_id], references: [id])
+  reviewer  users? @relation("ReviewerSubmissions", fields: [reviewer_id], references: [id])
+}
+
+
+
+model developer_journey_completions {
+  id                    Int       @id @default(autoincrement())
+  user_id               Int?
+  journey_id            Int?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+  enrolling_times       Int?
+  study_duration        Int?
+  avg_submission_rating Float?
+
+  // Foreign Keys
+  user    users?              @relation(fields: [user_id], references: [id])
+  journey developer_journeys? @relation(fields: [journey_id], references: [id])
+}
+
+
+
+model exam_registrations {
+  id             Int       @id @default(autoincrement())
+  exam_module_id Int?
+  tutorial_id    Int?
+  examinees_id   Int?
+  status         String?
+  created_at     DateTime? @default(now())
+  updated_at     DateTime? @updatedAt
+  deadline_at    DateTime?
+
+  // Foreign Keys
+  tutorial   developer_journey_tutorials? @relation(fields: [tutorial_id], references: [id])
+  examinee   users?                       @relation(fields: [examinees_id], references: [id])
+
+  // Relasi
+  results    exam_results[]
+}
+
+
+
+model exam_results {
+  id                   Int       @id @default(autoincrement())
+  exam_registration_id Int?
+  total_questions      Int?
+  score                Int?
+  is_passed            Boolean?
+  created_at           DateTime? @default(now())
+  look_report_at       DateTime?
+
+  // Foreign Keys
+  exam_registration exam_registrations? @relation(fields: [exam_registration_id], references: [id])
+}

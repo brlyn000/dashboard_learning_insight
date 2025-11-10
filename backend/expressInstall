@@ -1,0 +1,39 @@
+
+//ORM Sequelize
+mkdir backend
+
+npm init -y
+
+npm i express mysql2 sequelize cors
+
+tambah package.json "type":"module"
+
+buat index.js dan tambahkan:
+import express from "express";
+import cors from "cors"
+npm i -g nodemon
+
+buat folder config yang isinya database.js untuk koneksi ke database:
+import {sequelize} from "sequelize"
+
+
+
+
+//ORM Prisma
+npm i express cors dotenv
+
+npm i -D prisma
+
+npm i @prisma/client
+
+npx prisma init
+
+tambahkan package.json "type":"module"
+
+mysql://username:password@localhost:3306/namaDB
+
+download extend prisma
+
+npx prisma migrate dev
+
+
