@@ -22,12 +22,14 @@ model users {
   display_name            String? 
   name                    String?
   email                   String?   @unique
+  password String
   phone                   String?
   user_role               String?
   user_verification_status Boolean?
   created_at              DateTime? @default(now())
   updated_at              DateTime? @updatedAt
   city                    String?
+  refresh_token           String?
 
   // Relasi
   instructor_journeys     developer_journeys[] @relation("InstructorJourneys")
