@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- JURUS PAMUNGKAS HILANGKAN KOTAK HITAM --- */
+
+/* Target Wrapper Recharts */
+.recharts-wrapper {
+  outline: none !important;
+  border: none !important;
+}
+
+/* Target State Fokus & Fokus-Visible (Ini yang bikin bandel) */
+.recharts-wrapper:focus,
+.recharts-wrapper:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Target Elemen di dalamnya (SVG, Path, dll) */
+.recharts-wrapper * {
+  outline: none !important;
+}
