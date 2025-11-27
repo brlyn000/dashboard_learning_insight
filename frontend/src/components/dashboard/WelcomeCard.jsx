@@ -1,12 +1,17 @@
 import React from 'react';
 
-const WelcomeCard = () => (
-  <div className="bg-primary rounded-2xl p-8 text-white shadow-lg shadow-green-200/50 relative overflow-hidden">
+// REFACTOR: Warna sekarang statis (Hijau Brand), tidak mengikuti persona
+const WelcomeCard = ({ user, className = "" }) => (
+  <div className={`bg-[#2ebf91] rounded-2xl p-6 text-white shadow-lg relative overflow-hidden h-full flex flex-col justify-center ${className}`}>
     <div className="relative z-10">
-        <h3 className="text-3xl font-bold mb-2">Welcome Bujang!</h3>
-        <p className="opacity-90 text-lg">Hope your learning activities are enjoyable.</p>
+        <h3 className="text-2xl font-bold mb-2">Welcome back, {user.name}!</h3>
+        <p className="opacity-90 text-sm leading-relaxed">
+            {user.persona.desc}
+        </p>
     </div>
-    <div className="absolute right-0 top-0 w-64 h-64 bg-white opacity-10 rounded-full transform translate-x-1/2 -translate-y-1/2"></div>
+    
+    {/* Hiasan */}
+    <div className="absolute right-[-10px] top-[-10px] w-32 h-32 bg-white opacity-10 rounded-full blur-xl"></div>
   </div>
 );
 

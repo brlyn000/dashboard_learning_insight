@@ -1,6 +1,6 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { dataTimeSpent, BAR_COLORS } from '../../data/mockData'; // Import data
+import { BAR_COLORS } from '../../data/mockData'; // Cuma import warna
 
 const CustomBarTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
@@ -15,18 +15,26 @@ const CustomBarTooltip = ({ active, payload }) => {
   return null;
 };
 
-const TimeSpentChart = () => (
+// TERIMA PROPS 'data'
+const TimeSpentChart = ({ data }) => (
   <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
     <h3 className="font-bold text-gray-800 mb-6 text-lg">Time Spent Learning (Hours)</h3>
-    <div className="h-[392px]">
+    <div className="h-[370px]">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={dataTimeSpent}>
+        <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-          <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#9ca3af', fontSize: 12}} dy={10} />
+          <XAxis 
+            dataKey="name" 
+            axisLine={false} 
+            tickLine={false} 
+            tick={{fill: '#9ca3af', fontSize: 12}} 
+            dy={10} 
+            tickFormatter={(val) => val.charAt(0)}
+          />
           <YAxis axisLine={false} tickLine={false} tick={{fill: '#9ca3af', fontSize: 12}} />
           <Tooltip content={<CustomBarTooltip />} cursor={{fill: '#f9fafb'}} />
           <Bar dataKey="hours" radius={[6, 6, 0, 0]} barSize={32}>
-              {dataTimeSpent.map((entry, index) => (
+              {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={BAR_COLORS[index % BAR_COLORS.length]} />
               ))}
           </Bar>
