@@ -1,11 +1,8 @@
-// File: frontend/src/services/api.js
-// Respon-ID: pengecekan_file_31 - COMPLETE WITH NOTIFICATIONS
-
 import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:5000/api';
 
-// Create axios instance
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -14,7 +11,7 @@ const api = axios.create({
   withCredentials: true,
 });
 
-// Request interceptor
+
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -28,7 +25,7 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor
+
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -57,9 +54,7 @@ api.interceptors.response.use(
   }
 );
 
-// ============================
-// AUTH SERVICES
-// ============================
+
 export const authService = {
   login: async (email, password) => {
     const response = await api.post('/auth/login', { email, password });
@@ -88,9 +83,7 @@ export const authService = {
   },
 };
 
-// ============================
-// DASHBOARD SERVICES
-// ============================
+
 export const dashboardService = {
   getDashboardData: async (username) => {
     const response = await api.get(`/dashboard/${username}`);
@@ -98,9 +91,7 @@ export const dashboardService = {
   },
 };
 
-// ============================
-// POMODORO SERVICES
-// ============================
+
 export const pomodoroService = {
   saveSession: async (sessionData) => {
     const response = await api.post('/pomodoro/session', sessionData);
@@ -116,9 +107,7 @@ export const pomodoroService = {
   },
 };
 
-// ============================
-// COURSE SERVICES
-// ============================
+
 export const courseService = {
   getUserCourses: async (userId) => {
     const response = await api.get(`/courses/${userId}`);
@@ -132,9 +121,7 @@ export const courseService = {
   },
 };
 
-// ============================
-// ML SERVICES
-// ============================
+
 export const mlService = {
   generateInsights: async (userId) => {
     const response = await api.post('/ml/insights', { userId });
@@ -154,9 +141,7 @@ export const mlService = {
   },
 };
 
-// ============================
-// WEEKLY REPORT SERVICES
-// ============================
+
 export const weeklyReportService = {
   getCurrentWeeklyReport: async (userId) => {
     const response = await api.get(`/weekly-reports/${userId}/current`);
@@ -164,48 +149,44 @@ export const weeklyReportService = {
   },
 };
 
-// ============================
-// NOTIFICATION SERVICES (NEW)
-// ============================
+
 export const notificationService = {
-  // Get all notifications for user
+
   getAll: async (userId) => {
     const response = await api.get(`/notifications/${userId}`);
     return response.data;
   },
   
-  // Delete single notification
+
   delete: async (notificationId) => {
     const response = await api.delete(`/notifications/${notificationId}`);
     return response.data;
   },
   
-  // Clear all notifications for user
+
   clearAll: async (userId) => {
     const response = await api.delete(`/notifications/user/${userId}/clear`);
     return response.data;
   },
   
-  // Mark single notification as read
+
   markAsRead: async (notificationId) => {
     const response = await api.patch(`/notifications/${notificationId}/read`);
     return response.data;
   },
   
-  // Mark all notifications as read
+
   markAllAsRead: async (userId) => {
     const response = await api.patch(`/notifications/user/${userId}/read-all`);
     return response.data;
   },
   
-  // Generate personal notification from ML
+
   generatePersonal: async (userId) => {
     const response = await api.post(`/notifications/generate/${userId}`);
     return response.data;
   },
 };
 
-// ============================
-// DEFAULT EXPORT
-// ============================
+
 export default api;

@@ -1,4 +1,4 @@
-// frontend/src/components/dashboard/CourseListWidget.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Clock, Calendar, ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
@@ -26,7 +26,7 @@ const CourseListWidget = ({ user }) => {
             ? course.progress
             : 0;
 
-          // pakai status dari backend jika ada, kalau tidak hitung sendiri
+
           const status =
             course.status ||
             getCourseStatus(
@@ -76,7 +76,7 @@ const CourseListWidget = ({ user }) => {
         <h3 className="font-bold text-gray-800 text-lg">My Courses</h3>
       </div>
 
-      {/* Tabs */}
+
       <div className="flex gap-2 mb-4 overflow-x-auto">
         {['All', 'Not Started', 'In Progress', 'Completed', 'Not Completed'].map(
           (tab) => (

@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
-// 1. ICON MAP: Menerjemahkan String dari Backend ke Komponen React
+
 const iconMap = {
   'Zap': Zap,
   'Coffee': Coffee,
@@ -28,13 +28,13 @@ const iconMap = {
 };
 
 const LearningSection = ({ user }) => {
-  // Defensive check: Jika data user belum lengkap, jangan render
+
   if (!user || !user.categories || !user.insights) return null;
 
   return (
     <div className="space-y-8">
         
-        {/* 1. LEARNING PROFILE (KATEGORI) */}
+
         <div>
             <h3 className="font-bold text-gray-800 mb-4 text-lg">Learning Profile</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -62,12 +62,12 @@ const LearningSection = ({ user }) => {
             </div>
         </div>
 
-        {/* 2. LEARNING INSIGHTS */}
+
         <div>
             <h3 className="font-bold text-gray-800 mb-4 text-lg">Learning Insights</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {user.insights.map((item, index) => {
-                    // Ambil Ikon dari Map, default ke Info jika tidak ada
+
                     const IconComponent = iconMap[item.icon] || Info; 
                     
                     return (
@@ -85,13 +85,13 @@ const LearningSection = ({ user }) => {
             </div>
         </div>
 
-        {/* 3. QUIZ CHART */}
+
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div className="flex justify-between items-center mb-2">
                 <h3 className="font-bold text-gray-800 mb-2 text-lg">Quiz Result Progress</h3>
                 <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded-lg font-bold">Weekly View</span>
             </div>
-            {/* Wrapper Chart dengan Tinggi Pasti untuk mencegah error width(-1) */}
+
             <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={user.charts?.quiz || []}>
@@ -118,10 +118,10 @@ const LearningSection = ({ user }) => {
   );
 };
 
-// --- SUB COMPONENTS & HELPERS ---
+
 
 const CategoryCard = ({ title, desc, icon: Icon, isActive, color }) => {
-    // Mapping style lengkap agar Tailwind tidak membuang classnya
+
     const styles = {
         emerald: {
             active: "border-emerald-500 bg-emerald-50 ring-1 ring-emerald-200",
@@ -152,13 +152,10 @@ const CategoryCard = ({ title, desc, icon: Icon, isActive, color }) => {
     );
 }
 
-// Helper Functions untuk Warna Insight
-// Kita tidak pakai `bg-${color}-100` karena Tailwind sering gagal membacanya saat compile.
-// Lebih baik di-mapping eksplisit.
+
 
 const getBorderColor = (colorString) => {
-    // Backend mengirim string class (misal 'text-green-400') atau nama warna ('emerald')
-    // Kita cek stringnya mengandung kata apa
+
     if (colorString.includes('red')) return 'border-red-100 bg-red-50/50';
     if (colorString.includes('green') || colorString.includes('emerald')) return 'border-emerald-100 bg-emerald-50/50';
     if (colorString.includes('yellow') || colorString.includes('orange')) return 'border-orange-100 bg-orange-50/50';

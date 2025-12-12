@@ -1,4 +1,4 @@
-// frontend/src/components/dashboard/CourseCompletionChart.jsx
+
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import api from '../../services/api';
@@ -14,8 +14,8 @@ const CustomDonutTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const d = payload[0];
     const name = d.name;
-    const count = d.payload.count; // jumlah kursus
-    const percentage = d.payload.value; // persen
+    const count = d.payload.count;
+    const percentage = d.payload.value;
     return (
       <div className="bg-white p-3 rounded-xl shadow-2xl border border-gray-100 text-sm z-[9999]">
         <div className="flex items-center gap-2 mb-1">
@@ -35,7 +35,7 @@ const CustomDonutTooltip = ({ active, payload }) => {
 
 const CourseCompletionChart = ({ user }) => {
   const [activeIndex, setActiveIndex] = useState(null);
-  const [selectedIndex, setSelectedIndex] = useState(null); // Untuk klik
+  const [selectedIndex, setSelectedIndex] = useState(null);
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -67,7 +67,7 @@ const CourseCompletionChart = ({ user }) => {
     );
   }
 
-  // Hitung jumlah kursus per status dari data yang sama dengan MyCourses
+
   const statusCounts = {
     'Completed': 0,
     'In Progress': 0,
@@ -84,7 +84,7 @@ const CourseCompletionChart = ({ user }) => {
 
   const totalCount = courses.length || 1;
 
-  // Siapkan data untuk chart
+
   const chartData = Object.entries(statusCounts)
     .filter(([_, count]) => count > 0)
     .map(([name, count]) => ({
@@ -116,11 +116,11 @@ const CourseCompletionChart = ({ user }) => {
 
   const handlePieClick = (_, index) => {
     if (selectedIndex === index) {
-      // Klik lagi untuk reset
+  
       setSelectedIndex(null);
       setActiveIndex(null);
     } else {
-      // Klik untuk memilih
+  
       setSelectedIndex(index);
       setActiveIndex(index);
     }
@@ -130,17 +130,17 @@ const CourseCompletionChart = ({ user }) => {
     handlePieClick(null, index);
   };
 
-  // Tentukan data yang aktif
+
   const activeItem = selectedIndex !== null ? chartData[selectedIndex] : 
                      (activeIndex !== null ? chartData[activeIndex] : null);
 
-  // Hitung total persentase completion
+
   const totalCompletionPercent = chartData.find(item => item.name === 'Completed')?.value || 0;
   const totalCompletedCount = chartData.find(item => item.name === 'Completed')?.count || 0;
 
   const centerValue = activeItem
     ? `${activeItem.count}` // Tampilkan jumlah kursus
-    : `${totalCompletedCount}`; // Default tampilkan jumlah completed
+    : `${totalCompletedCount}`;
 
   const centerLabel = activeItem ? activeItem.name : 'COMPLETED';
 
@@ -149,7 +149,7 @@ const CourseCompletionChart = ({ user }) => {
       <h3 className="font-bold text-gray-800 mb-4 text-lg">Course Completion</h3>
 
       <div className="flex-1 flex flex-col items-center justify-center relative min-h-[200px]">
-        {/* center text */}
+
         <div className="absolute inset-0 flex flex-col items-center justify-center z-0 pointer-events-none">
           <span className="text-4xl font-extrabold text-gray-800 transition-all duration-300 leading-none">
             {centerValue}
@@ -159,7 +159,7 @@ const CourseCompletionChart = ({ user }) => {
           </span>
         </div>
 
-        {/* chart */}
+
         <div className="relative z-10 w-full h-[200px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -201,7 +201,7 @@ const CourseCompletionChart = ({ user }) => {
         </div>
       </div>
 
-      {/* legend */}
+
       <div className="grid grid-cols-2 gap-y-3 gap-x-4 mt-6">
         {chartData.map((entry, index) => (
           <div
@@ -221,13 +221,13 @@ const CourseCompletionChart = ({ user }) => {
               {entry.name}
             </span>
             <span className="text-xs text-gray-400 ml-auto">
-              {entry.count} {/* Tampilkan jumlah kursus di legend */}
+              {entry.count}
             </span>
           </div>
         ))}
       </div>
 
-      {/* Footer info */}
+
       <div className="mt-4 pt-4 border-t border-gray-100 text-center">
         <div className="text-xs text-gray-500">
           Total: <span className="font-semibold text-gray-700">{totalCount} courses</span>

@@ -1,9 +1,4 @@
-// File: frontend/src/App.jsx
-// Respon-ID: pengecekan_file_28 - FIXED
-
 import { Routes, Route } from 'react-router-dom';
-
-// Import dari lokasi folder baru (pages & layouts)
 import Login from './pages/Login';
 import MainLayout from './layouts/MainLayout';
 import Dashboard from './pages/Dashboard';

@@ -1,14 +1,14 @@
-// File: src/utils/iconMap.js - UPDATED
+
 import { 
   TrendingUp, Clock, Award, Lightbulb, Zap, Moon, Sun, 
   BatteryWarning, Bell, MessageCircle, BookOpen, 
   Star, CheckCircle, FileText, PlayCircle, User, Layers,
-  Brain // Tambahkan ini
+  Brain
 } from 'lucide-react';
 
 export const getIcon = (iconName) => {
   const icons = {
-    // Mapping Nama String ke Komponen React
+
     "TrendingUp": TrendingUp,
     "Clock": Clock,
     "Award": Award,
@@ -26,10 +26,9 @@ export const getIcon = (iconName) => {
     "PlayCircle": PlayCircle,
     "User": User,
     "Layers": Layers,
-    "Brain": Brain // Tambahkan mapping untuk Brain
+    "Brain": Brain
   };
 
-  // Jika ikon ditemukan, kembalikan komponennya. 
-  // Jika tidak, kembalikan 'Star' sebagai default agar tidak error.
+
   return icons[iconName] || Star; 
 };

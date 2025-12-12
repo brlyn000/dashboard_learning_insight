@@ -2,7 +2,7 @@ import React from 'react';
 import { Star } from 'lucide-react';
 
 const PersonaCard = ({ user, className = "" }) => {
-  // ✅ FIX: Proper validation
+
   if (!user || !user.persona || !user.persona.title) {
     return (
       <div 
@@ -34,7 +34,7 @@ const PersonaCard = ({ user, className = "" }) => {
     );
   }
 
-  // ✅ Data exists - render real persona
+
   const persona = user.persona;
   const Icon = persona.icon || Star;
 

@@ -1,11 +1,8 @@
-// File: frontend/src/layouts/MainLayout.jsx
-// Respon-ID: pengecekan_file_36 - Layout Asli + Delete Notification
-
 import React, { useState, useEffect, useRef } from 'react';
 import { LayoutDashboard, BookOpen, Bell, ChevronDown, LogOut, X, Trash2 } from 'lucide-react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
-import api from '../services/api';  // FIX: Tambah import api
+import api from '../services/api';
 import { getIcon } from '../utils/iconMap';
 
 const MainLayout = () => {
@@ -18,7 +15,7 @@ const MainLayout = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifMenu, setShowNotifMenu] = useState(false);
 
-  // --- FUNGSI FETCH USER DARI API ---
+
   const fetchUser = async (username) => {
     try {
       setIsLoading(true);
@@ -32,7 +29,7 @@ const MainLayout = () => {
 
       const userData = payload.user;
 
-      // TRANSFORMASI IKON (String Database -> Komponen React)
+
       if (userData.persona && userData.persona.icon) {
         userData.persona.icon = getIcon(userData.persona.icon);
       }
@@ -57,7 +54,7 @@ const MainLayout = () => {
       localStorage.setItem('currentUser', username);
     } catch (error) {
       console.error('Failed to fetch user:', error);
-      // Fallback data untuk testing
+
       const fallbackUser = {
         id: 1,
         name: username,
@@ -116,7 +113,7 @@ const MainLayout = () => {
     }
   };
 
-  // --- CEK LOGIN SAAT PERTAMA BUKA (MOUNT) ---
+
   useEffect(() => {
     const loggedInUser = localStorage.getItem('currentUser');
     if (loggedInUser) {
@@ -126,7 +123,7 @@ const MainLayout = () => {
     }
   }, []);
 
-  // --- LOGIKA POMODORO GLOBAL ---
+
   const [timeLeft, setTimeLeft] = useState(() => {
     const saved = localStorage.getItem('pomo_time');
     return saved ? parseInt(saved) : 25 * 60;
@@ -163,17 +160,13 @@ const MainLayout = () => {
     }
   }, [currentUser]);
 
-// ============================================
-// AUTO-GENERATE ML NOTIFICATION - DENGAN PROTEKSI
-// ============================================
-const mlNotifGeneratedRef = useRef(false); // Pakai useRef, bukan useState
+const mlNotifGeneratedRef = useRef(false);
 
 useEffect(() => {
   const generateMLNotification = async () => {
-    // Skip jika sudah di-generate dalam session ini
+
     if (!currentUser?.id || mlNotifGeneratedRef.current) return;
-    
-    // Tandai sudah di-generate
+
     mlNotifGeneratedRef.current = true;
     
     try {
@@ -183,8 +176,7 @@ useEffect(() => {
         userId: currentUser.id
       });
       
-      // Backend akan handle duplikat, jadi tidak perlu update UI
-      // Notifikasi sudah ada di currentUser.notifications dari fetchUser
+
       console.log('ML notification response:', response.data);
     } catch (error) {
       console.log('ML notification skipped:', error.message);
@@ -194,7 +186,7 @@ useEffect(() => {
   generateMLNotification();
 }, [currentUser?.id]);
 
-// Reset ref saat user berubah (switch persona)
+
 useEffect(() => {
   mlNotifGeneratedRef.current = false;
 }, [currentUser?.name]);
@@ -238,18 +230,13 @@ useEffect(() => {
     navigate('/');
   };
 
-  // ============================================
-  // FUNGSI NOTIFIKASI (Tanpa Backend untuk sementara)
-  // ============================================
-// Delete Single Notification - HAPUS dari database
+
+
 const handleDeleteNotification = async (notifId) => {
   if (!notifId) return;
   
   try {
-    // Hapus dari database
     await api.delete(`/ml/notifications/${notifId}`);
-    
-    // Update UI
     setCurrentUser(prev => ({
       ...prev,
       notifications: prev.notifications?.filter(n => n.id !== notifId) || []
@@ -258,7 +245,6 @@ const handleDeleteNotification = async (notifId) => {
     console.log('Notification deleted from database:', notifId);
   } catch (error) {
     console.error('Failed to delete notification:', error);
-    // Fallback: tetap hapus dari UI saja
     setCurrentUser(prev => ({
       ...prev,
       notifications: prev.notifications?.filter(n => n.id !== notifId) || []
@@ -267,15 +253,12 @@ const handleDeleteNotification = async (notifId) => {
 };
 
 
-  // Clear All Notifications - HAPUS dari database
+
 const handleClearAllNotifications = async () => {
   if (!currentUser?.id) return;
   
   try {
-    // Hapus semua notifikasi user dari database
     await api.delete(`/ml/notifications/${currentUser.id}/clear-all`);
-    
-    // Update UI
     setCurrentUser(prev => ({
       ...prev,
       notifications: []
@@ -284,7 +267,7 @@ const handleClearAllNotifications = async () => {
     console.log('All notifications cleared from database');
   } catch (error) {
     console.error('Failed to clear notifications:', error);
-    // Fallback: tetap hapus dari UI saja
+
     setCurrentUser(prev => ({
       ...prev,
       notifications: []
@@ -293,7 +276,7 @@ const handleClearAllNotifications = async () => {
 };
 
 
-  // Tampilan Loading
+
   if (isLoading || !currentUser) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -309,9 +292,9 @@ const handleClearAllNotifications = async () => {
 
   return (
     <div className="min-h-screen flex bg-[#f3f4f6]">
-      {/* ========== SIDEBAR ========== */}
+
       <aside className="w-[220px] bg-white flex flex-col fixed h-full z-10 border-r border-gray-200">
-        {/* Logo Besar */}
+
         <div className="p-5 border-b border-gray-100">
           <div className="flex items-center gap-3">
             <img src={logo} alt="Nexalar" className="w-8 h-8" />
@@ -322,7 +305,7 @@ const handleClearAllNotifications = async () => {
           </div>
         </div>
 
-        {/* Navigation */}
+
         <nav className="flex-1 p-4">
           <Link
             to="/dashboard"
@@ -341,14 +324,14 @@ const handleClearAllNotifications = async () => {
         </nav>
       </aside>
 
-      {/* ========== MAIN CONTENT (Tanpa Header Fixed) ========== */}
+
       <div className="flex-1 ml-[220px]">
-        {/* ========== HEADER TRANSPARAN (Tidak Fixed) ========== */}
+
         <div className="flex items-center justify-between px-6 py-4">
           <h1 className="text-2xl font-bold text-gray-800">{pageTitle}</h1>
 
           <div className="flex items-center gap-4">
-            {/* Notification Bell */}
+
             <div className="relative">
               <button
                 onClick={() => setShowNotifMenu(!showNotifMenu)}
@@ -362,7 +345,7 @@ const handleClearAllNotifications = async () => {
                 )}
               </button>
 
-              {/* Notification Dropdown */}
+
               {showNotifMenu && (
                 <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
                   <div className="p-3 border-b flex items-center justify-between bg-gray-50">
@@ -429,7 +412,7 @@ const handleClearAllNotifications = async () => {
               )}
             </div>
 
-{/* User Menu dengan Switch User */}
+
 <div className="relative">
   <button
     onClick={() => setShowUserMenu(!showUserMenu)}
@@ -442,7 +425,7 @@ const handleClearAllNotifications = async () => {
 
   {showUserMenu && (
     <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
-      {/* Current User Info */}
+
       <div className="p-3 border-b bg-gray-50">
         <p className="font-semibold text-gray-800">{currentUser.name}</p>
         <p className="text-xs text-gray-500">{currentUser.email}</p>
@@ -451,7 +434,7 @@ const handleClearAllNotifications = async () => {
         </span>
       </div>
       
-      {/* Switch User Section */}
+
       <div className="p-2 border-b">
         <p className="text-[10px] text-gray-400 uppercase tracking-wide px-2 mb-2">Switch Persona</p>
         {['Bujang', 'Sarah', 'Budi', 'Newbie'].map(name => {
@@ -502,7 +485,7 @@ const handleClearAllNotifications = async () => {
         })}
       </div>
       
-      {/* Logout Button */}
+
       <button
         onClick={handleLogout}
         className="w-full px-4 py-3 text-left text-red-600 hover:bg-red-50 flex items-center gap-2 transition"
@@ -517,7 +500,7 @@ const handleClearAllNotifications = async () => {
           </div>
         </div>
 
-        {/* ========== PAGE CONTENT ========== */}
+
         <main className="px-6 pb-6">
           <Outlet context={pomodoroData} />
         </main>

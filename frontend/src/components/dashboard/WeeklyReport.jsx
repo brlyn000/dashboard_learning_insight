@@ -3,7 +3,7 @@ import { TrendingUp, Clock, CheckCircle, FileText, Layers, ChevronRight, X, Spar
 import { mlService, weeklyReportService } from '../../services/api';
 
 const WeeklyReport = ({ user }) => {
-  // --- STATE MANAGEMENT ---
+
   const [weeklyStats, setWeeklyStats] = useState({
     dateRange: "No Data",
     totalStudy: "0h 0m",
@@ -23,7 +23,7 @@ const WeeklyReport = ({ user }) => {
   const [mlError, setMlError] = useState(null);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
 
-  // --- FETCH REAL DATA ON MOUNT ---
+
   useEffect(() => {
     console.log('📊 WeeklyReport useEffect triggered');
     console.log('📊 User object:', user);
@@ -32,17 +32,17 @@ const WeeklyReport = ({ user }) => {
     if (user?.id) {
       console.log('📊 Starting data fetch...');
       
-      // Fetch ML insights terlebih dahulu karena sudah terbukti bekerja
+
       fetchMLInsights();
       
-      // Coba fetch weekly stats, jika gagal akan menggunakan data dari ML insights
+
       fetchWeeklyStats();
     } else {
       console.log('❌ User ID not found, skipping fetch');
     }
   }, [user?.id]);
 
-  // --- FETCH WEEKLY STATS FROM DATABASE ---
+
   const fetchWeeklyStats = async () => {
     console.log('🚀 fetchWeeklyStats called');
     setStatsLoading(true);
@@ -58,7 +58,7 @@ const WeeklyReport = ({ user }) => {
       } else {
         console.warn('⚠️ Weekly stats API response not successful:', response);
         
-        // Fallback: Coba gunakan data dari ML insights jika ada
+
         if (mlInsights?.metrics) {
           console.log('🔄 Using data from ML insights as fallback');
           const fallbackData = {
@@ -75,7 +75,7 @@ const WeeklyReport = ({ user }) => {
       console.error('❌ [Fetch Weekly Stats Error]:', error);
       console.error('❌ Error details:', error.response?.data || error.message);
       
-      // Fallback ke data ML insights jika error
+
       if (mlInsights?.metrics) {
         console.log('🔄 Fallback to ML insights data due to error');
         const fallbackData = {
@@ -92,9 +92,9 @@ const WeeklyReport = ({ user }) => {
     }
   };
 
-  // --- HELPER: Update weekly stats state ---
+
   const updateWeeklyStats = (data) => {
-    // Format tanggal
+
     const startDate = data.week_start_date 
       ? new Date(data.week_start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
       : '';
@@ -102,11 +102,11 @@ const WeeklyReport = ({ user }) => {
       ? new Date(data.week_end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
       : '';
     
-    // Format study time (convert dari hours ke "Xh Ym")
+
     const hours = Math.floor(data.total_study_time_hours || 0);
     const minutes = Math.round(((data.total_study_time_hours || 0) - hours) * 60);
     
-    // Calculate study trend (compare to target 40 hours/week)
+
     const trendPercentage = data.total_study_time_hours > 0 
       ? Math.round((data.total_study_time_hours / 40) * 100) 
       : 0;
@@ -126,7 +126,7 @@ const WeeklyReport = ({ user }) => {
     setWeeklyStats(newStats);
   };
 
-  // --- FETCH ML INSIGHTS ---
+
   const fetchMLInsights = async () => {
     setMlLoading(true);
     setMlError(null);
@@ -137,19 +137,19 @@ const WeeklyReport = ({ user }) => {
       if (response.success) {
         console.log('[ML Insights] ✅ Received:', response.data);
         
-        // Format data untuk konsistensi
+
         const formattedData = {
-          // Prioritasi: performance_level dari ML, lalu dari data
+
           performance_level: response.data.performance_level || 
                             (response.data.engagement_score >= 90 ? 'Excellent' : 
                              response.data.engagement_score >= 70 ? 'Good' : 
                              response.data.engagement_score >= 50 ? 'Average' : 'Needs Improvement'),
           
-          // Gunakan summary atau message (tidak keduanya)
+
           summary: response.data.summary || response.data.message,
           message: undefined, // Kosongkan message karena sudah di summary
           
-          // Metrics breakdown
+
           metrics: response.data.metrics || {
             study_time: response.data.study_time || 0,
             pomodoro: response.data.pomodoro || 0,
@@ -157,10 +157,10 @@ const WeeklyReport = ({ user }) => {
             modules: response.data.modules || 0
           },
           
-          // Persona
+
           persona: response.data.persona || response.data.learning_style,
           
-          // Engagement score
+
           engagement_score: response.data.engagement_score || 
                            (response.data.metrics ? 
                              Math.min(100, Math.round(
@@ -169,14 +169,14 @@ const WeeklyReport = ({ user }) => {
                                 (response.data.metrics.modules || 0) * 0.4) * 10
                              )) : 75),
           
-          // Recommendations
+
           recommendations: response.data.recommendations || 
                           (response.data.recommendation ? [response.data.recommendation] : [])
         };
         
         setMlInsights(formattedData);
         
-        // Jika weekly stats masih 0, coba update dari ML insights
+
         if (weeklyStats.pomodoroCompleted === 0 && formattedData.metrics) {
           console.log('🔄 Updating weekly stats from ML insights');
           const mlData = {
@@ -199,7 +199,7 @@ const WeeklyReport = ({ user }) => {
     }
   };
 
-  // --- REFRESH ALL DATA ---
+
   const handleRefresh = () => {
     fetchWeeklyStats();
     fetchMLInsights();
@@ -217,7 +217,7 @@ const WeeklyReport = ({ user }) => {
     document.body.style.overflow = 'unset';
   };
 
-  // --- HELPER FUNCTIONS ---
+
   const getIconStyle = (color) => {
     switch(color) {
       case 'emerald': return 'bg-emerald-100 text-emerald-600';
@@ -255,7 +255,7 @@ const WeeklyReport = ({ user }) => {
     <>
       <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 relative z-10">
           
-          {/* HEADER */}
+
           <div className="mb-8">
               <h2 className="text-2xl font-bold text-gray-800">Weekly Learning Report</h2>
               <p className="text-gray-500 mt-1 text-sm">
@@ -267,9 +267,9 @@ const WeeklyReport = ({ user }) => {
               </p>
           </div>
 
-          {/* METRICS (4 KARTU STATISTIK) - Real Data dari Database */}
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-               {/* Total Study Time Card */}
+
                <div className="bg-emerald-50 border border-emerald-200 p-6 rounded-2xl flex flex-col justify-between h-40 relative overflow-hidden group">
                  <div className="relative z-10">
                    <p className="text-emerald-800 font-bold text-sm mb-1">Total Study Time</p>
@@ -284,7 +284,7 @@ const WeeklyReport = ({ user }) => {
                  <Clock className="absolute right-[-10px] bottom-[-10px] w-20 h-20 text-emerald-200 opacity-20 rotate-12" />
                </div>
 
-               {/* Pomodoro Sessions Card */}
+
                <div className="bg-blue-50 border border-blue-200 p-6 rounded-2xl flex flex-col justify-between h-40 relative overflow-hidden group">
                  <div className="relative z-10">
                    <p className="text-blue-800 font-bold text-sm mb-1">Pomodoro Sessions</p>
@@ -301,7 +301,7 @@ const WeeklyReport = ({ user }) => {
                  <CheckCircle className="absolute right-[-10px] bottom-[-10px] w-20 h-20 text-blue-200 opacity-20 rotate-12" />
                </div>
 
-               {/* Quizzes Completed Card */}
+
                <div className="bg-orange-50 border border-orange-200 p-6 rounded-2xl flex flex-col justify-between h-40 relative overflow-hidden group">
                  <div className="relative z-10">
                    <p className="text-orange-800 font-bold text-sm mb-1">Quizzes Completed</p>
@@ -315,7 +315,7 @@ const WeeklyReport = ({ user }) => {
                  <FileText className="absolute right-[-10px] bottom-[-10px] w-20 h-20 text-orange-200 opacity-20 rotate-12" />
                </div>
 
-               {/* Modules Finished Card */}
+
                <div className="bg-purple-50 border border-purple-200 p-6 rounded-2xl flex flex-col justify-between h-40 relative overflow-hidden group">
                  <div className="relative z-10">
                    <p className="text-purple-800 font-bold text-sm mb-1">Modules Finished</p>
@@ -328,7 +328,7 @@ const WeeklyReport = ({ user }) => {
                </div>
           </div>
 
-          {/* AI LEARNING INSIGHTS SECTION */}
+
           <div className="mb-6 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Sparkles size={20} className="text-primary" />
@@ -345,9 +345,9 @@ const WeeklyReport = ({ user }) => {
               </button>
           </div>
 
-          {/* ML INSIGHTS CONTENT */}
+
           <div className="mb-8">
-            {/* Loading State */}
+
             {mlLoading && (
               <div className="flex items-center justify-center py-12 bg-blue-50 rounded-2xl border border-blue-100">
                 <Loader className="w-6 h-6 text-blue-500 animate-spin mr-3" />
@@ -355,7 +355,7 @@ const WeeklyReport = ({ user }) => {
               </div>
             )}
 
-            {/* Error State */}
+
             {mlError && !mlLoading && (
               <div className="p-6 bg-red-50 rounded-2xl border border-red-200">
                 <div className="flex items-center gap-3 mb-3">
@@ -371,10 +371,10 @@ const WeeklyReport = ({ user }) => {
               </div>
             )}
 
-            {/* Success State - ML Insights */}
+
             {mlInsights && !mlLoading && !mlError && (
               <div className="space-y-4">
-                {/* Main Insight Card */}
+
                 <div className="p-6 rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50">
                   <div className="flex items-start gap-4 mb-4">
                     <div className="p-3 bg-blue-500 rounded-xl flex-shrink-0 shadow-md">
@@ -394,14 +394,14 @@ const WeeklyReport = ({ user }) => {
                         )}
                       </div>
                       
-                      {/* Tampilkan hanya SATU teks, prioritaskan summary */}
+
                       <p className="text-gray-700 leading-relaxed text-base">
                         {mlInsights.summary || 'Pick a course to begin your journey!'}
                       </p>
                     </div>
                   </div>
 
-                  {/* SAY MORE BUTTON - hanya tampilkan jika ada metrics atau persona */}
+
                   {(mlInsights.metrics || mlInsights.persona) && (
                     <button
                       onClick={() => setDetailsExpanded(!detailsExpanded)}
@@ -413,7 +413,7 @@ const WeeklyReport = ({ user }) => {
                     </button>
                   )}
 
-                  {/* Detailed Analysis (Collapsible) */}
+
                   {detailsExpanded && (
                     <div className="mt-4 pt-4 border-t border-blue-200 animate-fade-in">
                       <div className="bg-white rounded-xl p-4 space-y-3">
@@ -455,7 +455,7 @@ const WeeklyReport = ({ user }) => {
                   )}
                 </div>
 
-                {/* Recommendations Card - hanya tampilkan jika ada rekomendasi */}
+
                 {(mlInsights.recommendations && mlInsights.recommendations.length > 0) && (
                   <div className="p-6 rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50">
                     <div className="flex items-start gap-4">
@@ -487,7 +487,7 @@ const WeeklyReport = ({ user }) => {
               </div>
             )}
 
-            {/* Fallback: Static Insights (if no ML data) */}
+
             {!mlInsights && !mlLoading && !mlError && user.insights && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {user.insights.map((insight, index) => {
@@ -531,7 +531,7 @@ const WeeklyReport = ({ user }) => {
           </div>
       </div>
 
-      {/* MODAL for Static Insights */}
+
       {isModalOpen && selectedInsight && (
         <div className="fixed top-0 left-0 w-screen h-screen z-[99999] flex items-center justify-center p-4 animate-fade-in">
           <div className="fixed top-0 left-0 w-screen h-screen bg-black/70 backdrop-blur-sm cursor-pointer" onClick={handleCloseModal}></div>

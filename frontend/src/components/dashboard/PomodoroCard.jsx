@@ -1,6 +1,3 @@
-// File: frontend/src/components/dashboard/PomodoroCard.jsx
-// Respon-ID: revisi_warna_pomodoro_calm
-
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, AlertTriangle, Clock } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
@@ -34,10 +31,10 @@ const PomodoroCard = ({ user }) => {
 
   const getCurrentTimer = () => useRecommended ? getRecommendedTimer() : DEFAULT_TIMER;
 
-  // Check if this should be a long rest (every 4 sessions)
+
   const shouldBeLongRest = (session) => session > 0 && session % 4 === 0;
 
-  // Get appropriate rest time
+
   const getRestTime = (timer, session) => {
     if (shouldBeLongRest(session)) {
       return timer.longRestTime;
@@ -77,7 +74,7 @@ const PomodoroCard = ({ user }) => {
       const timer = getCurrentTimer();
 
       if (mode === 'focus') {
-        // Focus selesai -> masuk ke rest
+
         const isLong = shouldBeLongRest(sessionCount);
         const restDuration = isLong ? timer.longRestTime : timer.restTime;
         
@@ -97,7 +94,7 @@ const PomodoroCard = ({ user }) => {
           setTimeLeft(restDuration * 60);
         }, 1000);
       } else {
-        // Rest selesai -> masuk ke focus berikutnya
+
         if (Notification.permission === 'granted') {
           new Notification('Break Over!', {
             body: 'Ready for next focus session?',
@@ -179,7 +176,7 @@ const PomodoroCard = ({ user }) => {
     setPendingAction(null);
   };
 
-  // Handle mode tab click
+
   const handleModeClick = (newMode) => {
     if (isActive) return;
     const timer = getCurrentTimer();
@@ -195,12 +192,12 @@ const PomodoroCard = ({ user }) => {
 
   const timer = getCurrentTimer();
   const recommendedTimer = getRecommendedTimer();
-  // eslint-disable-next-line no-unused-vars
+
   const currentRestTime = mode === 'rest' 
     ? (isLongRest ? timer.longRestTime : timer.restTime)
     : timer.restTime;
 
-  // Display current mode info
+
   const getModeLabel = () => {
     if (mode === 'focus') {
       return `Focus: ${timer.focusTime} min`;
@@ -213,10 +210,10 @@ const PomodoroCard = ({ user }) => {
 
   return (
     <>
-      {/* Main Card - UPDATE COLOR: Gradien Teal-Emerald yang lebih tenang dan cerah */}
+
       <div className="bg-gradient-to-br from-teal-500 to-emerald-600 rounded-2xl p-5 text-white shadow-lg h-full flex flex-col justify-between">
         
-        {/* Header */}
+
         <div className="flex justify-between items-center mb-3">
           <h3 className="font-semibold text-lg">Adaptive Pomodoro</h3>
           <div className="flex items-center gap-1.5 bg-white/20 px-2.5 py-1 rounded-full text-xs">
@@ -225,7 +222,7 @@ const PomodoroCard = ({ user }) => {
           </div>
         </div>
 
-        {/* Toggle Switch */}
+
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm text-white/90">
             {useRecommended ? `Recommended (${recommendedTimer.focusTime}min)` : 'Default (25min)'}
@@ -245,13 +242,13 @@ const PomodoroCard = ({ user }) => {
           </button>
         </div>
 
-        {/* Mode Tabs */}
+
         <div className="flex bg-white/20 rounded-xl p-1 mb-3">
           <button
             onClick={() => handleModeClick('focus')}
             className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
               mode === 'focus' 
-                ? 'bg-white text-emerald-600 shadow'  // UPDATE TEXT: Emerald-600 yang lebih tenang
+                ? 'bg-white text-emerald-600 shadow'
                 : 'text-white/80 hover:text-white'
             }`}
           >
@@ -261,7 +258,7 @@ const PomodoroCard = ({ user }) => {
             onClick={() => handleModeClick('rest')}
             className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
               mode === 'rest' 
-                ? 'bg-white text-emerald-600 shadow' // UPDATE TEXT: Emerald-600
+                ? 'bg-white text-emerald-600 shadow'
                 : 'text-white/80 hover:text-white'
             }`}
           >
@@ -269,31 +266,31 @@ const PomodoroCard = ({ user }) => {
           </button>
         </div>
 
-        {/* Timer Display */}
+
         <div className="text-center flex-grow flex flex-col justify-center">
           <div className="text-5xl font-bold tracking-wider">{formatTime(timeLeft)}</div>
           <p className="text-white/70 text-sm mt-1">{getModeLabel()}</p>
           
-          {/* Long Rest Indicator */}
+
           {mode === 'rest' && isLongRest && (
             <p className="text-yellow-300 text-xs mt-1">🎉 Long break earned!</p>
           )}
         </div>
 
-        {/* Suggestion */}
+
         <p className="text-center text-xs text-white/60 mb-3">
           ✨ {useRecommended 
             ? `${timer.focusTime}-${timer.restTime}-${timer.longRestTime} optimized for ${user?.persona?.title || 'you'}` 
             : 'Toggle for personalized timer'}
         </p>
 
-        {/* Control Buttons */}
+
         <div className="flex gap-2 justify-center">
           <button
             onClick={() => setIsActive(!isActive)}
             className="w-32 bg-white text-emerald-600 py-2.5 rounded-xl font-semibold hover:bg-white/90 transition-all shadow-lg"
           >
-             {/* UPDATE TEXT: text-emerald-600 untuk konsistensi */}
+
             {isActive ? 'Pause' : 'Start'}
           </button>
           
@@ -318,7 +315,7 @@ const PomodoroCard = ({ user }) => {
         </div>
       </div>
 
-      {/* Confirm Modal */}
+
       {showConfirmModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-5 max-w-xs mx-4 shadow-2xl">
@@ -342,7 +339,7 @@ const PomodoroCard = ({ user }) => {
               </button>
               <button onClick={confirmAction}
                 className="flex-1 px-3 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 text-sm">
-                {/* UPDATE BUTTON: bg-emerald-500 agar lebih cerah dan tenang */}
+
                 Confirm
               </button>
             </div>

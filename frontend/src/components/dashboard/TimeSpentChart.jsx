@@ -19,7 +19,7 @@ const TimeSpentChart = ({ data }) => (
   <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
     <div className="mb-6">
         <h3 className="font-bold text-gray-800 text-lg">Time Spent Learning (Hours)</h3>
-        {/* Penambahan Keterangan Sumber Data */}
+
         <p className="text-xs text-gray-400 font-medium mt-1">Data from current week activity</p>
     </div>
 

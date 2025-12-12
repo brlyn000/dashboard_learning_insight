@@ -25,7 +25,7 @@ const Dashboard = () => {
   return (
     <div className="space-y-8 animate-fade-in-up relative pb-10"> 
         
-        {/* GRID 1: TOP HERO */}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch h-auto lg:h-[350px]">
           <div className="lg:col-span-2 h-full">
             <PersonaCard user={user} className="w-full h-full" />
@@ -35,21 +35,21 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* GRID 2: WEEKLY REPORT (WITH INTEGRATED ML INSIGHTS) */}
+
         <WeeklyReport user={user} />
 
-        {/* BARIS BARU: QUIZ CHART (Full Width) */}
+
         <div className="w-full">
             <QuizProgressChart data={user.charts.quiz} />
         </div>
 
-        {/* GRID 3: CHARTS LAINNYA */}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
                 <TimeSpentChart data={user.charts.timeSpent} />
             </div>
             <div>
-                {/* PERUBAHAN DI SINI: Ganti data dengan user */}
+
                 <CourseCompletionChart user={user} />
             </div>
         </div>

@@ -1,4 +1,4 @@
-// File: src/pages/Login.jsx - UPDATE PASSWORD HINT
+
 import React, { useState } from 'react';
 import logo from '../assets/logo.png';
 import { useNavigate } from 'react-router-dom';
@@ -17,10 +17,10 @@ const Login = () => {
     setError('');
 
     try {
-        // Panggil API Login menggunakan authService
+
         await authService.login(email, password);
         
-        // Navigate ke dashboard
+
         navigate('/dashboard');
     } catch (err) {
         setError('Login gagal. Cek email/password Anda.');
@@ -69,7 +69,7 @@ const Login = () => {
                 </button>
             </form>
             
-            {/* PERBAIKI: Password yang benar adalah "123" */}
+
             <div className="mt-4 text-xs text-gray-400 text-center">
                 Try: bujang@nexalar.com / 123
             </div>
@@ -78,7 +78,7 @@ const Login = () => {
       </div>
 
       <div className="hidden md:flex w-1/2 bg-primary relative flex-col justify-center items-center text-white overflow-hidden">
-        {/* ... kode background tetap ... */}
+
         <div className="z-10 text-center px-10">
             <h2 className="text-4xl font-bold mb-4">Hello, Friend !</h2>
             <div className="w-20 h-1 bg-white mx-auto mb-6 rounded-full"></div>
