@@ -1,15 +1,10 @@
-// File: backend/src/controllers/authController.js
-// Respon-ID: pengecekan_file_5
-// ⚠️ WARNING: Opsi B - HANYA UNTUK DEVELOPMENT/DEMO
-// Untuk production, semua password HARUS di-hash!
-
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-// Generate JWT tokens
+
 const generateAccessToken = (user) => {
   return jwt.sign(
     { userId: user.id, email: user.email, name: user.name },
@@ -106,17 +101,15 @@ export const login = async (req, res) => {
       });
     }
 
-    // ============================================
-    // ⚠️ DEVELOPMENT MODE: Support both hashed and plain text passwords
-    // ============================================
+
     let isPasswordValid = false;
 
-    // Check if password in DB is hashed (bcrypt hashes start with $2a$ or $2b$)
+
     if (user.password.startsWith('$2a$') || user.password.startsWith('$2b$')) {
-      // Password is hashed, use bcrypt compare
+
       isPasswordValid = await bcrypt.compare(password, user.password);
     } else {
-      // Password is plain text (DEVELOPMENT ONLY!)
+
       isPasswordValid = (password === user.password);
       console.warn('⚠️ WARNING: Plain text password detected for user:', email);
       console.warn('⚠️ This is only acceptable for development/demo!');
@@ -132,13 +125,13 @@ export const login = async (req, res) => {
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    // Update refresh token di database
+
     await prisma.users.update({
       where: { id: user.id },
       data: { refresh_token: refreshToken }
     });
 
-    // Set HTTP-only cookie untuk refresh token
+
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -147,7 +140,7 @@ export const login = async (req, res) => {
       path: '/'
     });
 
-    // RESPONSE UNTUK FRONTEND
+
     res.json({
       success: true,
       message: "Login successful",
@@ -223,10 +216,10 @@ export const refresh = async (req, res) => {
       });
     }
 
-    // Verify refresh token
+
     jwt.verify(token, process.env.JWT_REFRESH_SECRET || 'your-refresh-secret');
 
-    // Generate new access token
+
     const accessToken = generateAccessToken(user);
 
     return res.json({

@@ -1,15 +1,11 @@
-// File: backend/src/services/mlService.js
-/**
- * ML Service Client
- * Handles all communication with ML microservice
- */
+
 
 import axios from 'axios';
 
 const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:8000';
 const ML_API_KEY = process.env.ML_API_KEY || 'nexalar-ml-api-key-2025';
 
-// Axios instance with default config
+
 const mlClient = axios.create({
   baseURL: ML_SERVICE_URL,
   timeout: 10000, // 10 seconds
@@ -19,7 +15,7 @@ const mlClient = axios.create({
   }
 });
 
-// Error handler
+
 const handleMLError = (error, operation) => {
   console.error(`[ML Service Error - ${operation}]:`, error.message);
 
@@ -44,11 +40,7 @@ const handleMLError = (error, operation) => {
   }
 };
 
-/**
- * Predict user learning persona (old features-based endpoint)
- * @param {Object} features - 18 user behavior features
- * @returns {Object} { persona, confidence }
- */
+
 export const predictPersona = async (features) => {
   try {
     const response = await mlClient.post('/predict/persona', {
@@ -64,11 +56,7 @@ export const predictPersona = async (features) => {
   }
 };
 
-/**
- * Predict user persona from weekly reports (NEW)
- * @param {Object} payload - { user_id, user_email, weekly_reports: [...] }
- * @returns {Object} { persona, confidence, features }
- */
+
 export const predictPersonaFromWeekly = async (payload) => {
   try {
     const response = await mlClient.post('/predict/persona/from-weekly', payload);
@@ -82,13 +70,7 @@ export const predictPersonaFromWeekly = async (payload) => {
   }
 };
 
-/**
- * Generate personalized notification
- * @param {String} userId - User ID
- * @param {String} persona - User persona type
- * @param {Object} userData - User activity data
- * @returns {Object} { type, message, best_time_hour, priority }
- */
+
 export const generateNotification = async (userId, persona, userData) => {
   try {
     const response = await mlClient.post('/notification/generate', {
@@ -106,12 +88,7 @@ export const generateNotification = async (userId, persona, userData) => {
   }
 };
 
-/**
- * Generate weekly insights
- * @param {Object} weeklyData - Weekly activity metrics
- * @param {String} persona - User persona
- * @returns {Object} Weekly insights with recommendations
- */
+
 export const generateInsights = async (weeklyData, persona) => {
   try {
     const response = await mlClient.post('/insight/weekly', {
@@ -128,19 +105,13 @@ export const generateInsights = async (weeklyData, persona) => {
   }
 };
 
-/**
- * Get pomodoro recommendation
- * @param {String} persona - User persona
- * @returns {Object} { focus_minutes, rest_minutes, rationale }
- *
- * NOTE: Update untuk endpoint yang benar sesuai dengan persona.py
- */
+
 export const getPomodoroRecommendation = async (persona) => {
   try {
-    // Gunakan GET endpoint dengan query parameter
+
     const response = await mlClient.get(`/pomodoro/recommend?persona=${persona}`);
     
-    // Jika GET tidak bekerja, coba POST
+
     if (!response.data) {
       const postResponse = await mlClient.post('/pomodoro/recommend', {
         persona: persona
@@ -158,7 +129,7 @@ export const getPomodoroRecommendation = async (persona) => {
   } catch (error) {
     console.error('Pomodoro recommendation error:', error);
     
-    // Fallback: Default recommendations based on persona
+
     const defaultRecommendations = {
       'fast_learner': { focus_minutes: 25, rest_minutes: 5, rationale: 'Classic Pomodoro - Quick bursts of focused work' },
       'consistent_learner': { focus_minutes: 30, rest_minutes: 5, rationale: 'Extended focus - Steady learning rhythm' },
@@ -175,10 +146,7 @@ export const getPomodoroRecommendation = async (persona) => {
   }
 };
 
-/**
- * Health check ML service
- * @returns {Object} Service status
- */
+
 export const checkMLServiceHealth = async () => {
   try {
     const response = await mlClient.get('/health');

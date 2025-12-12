@@ -6,10 +6,7 @@ import {
 
 const prisma = new PrismaClient();
 
-/**
- * GET /api/weekly-reports/:userId/current
- * Fetch latest weekly report dengan mapping field yang benar
- */
+
 export const getCurrentWeeklyReport = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -21,10 +18,10 @@ export const getCurrentWeeklyReport = async (req, res) => {
     console.log(`📊 Time: ${new Date().toISOString()}`);
     console.log('========================================\n');
 
-    // 1. Coba ambil dari database terlebih dahulu
+
     let report = await getLatestWeeklyReport(userId);
     
-    // 2. Jika tidak ada report di database, hitung dari data mentah
+
     if (!report) {
       console.log(`📊 No report in DB, calculating from raw data`);
       const metrics = await calculateCurrentWeekMetrics(userId);
@@ -34,7 +31,7 @@ export const getCurrentWeeklyReport = async (req, res) => {
         week_start_date: metrics.week_start_date,
         week_end_date: metrics.week_end_date,
         total_study_time_hours: metrics.total_study_time_hours,
-        // MAPPING: total_pomodoro_sessions -> pomodoro_sessions
+
         total_pomodoro_sessions: metrics.pomodoro_sessions,
         quizzes_completed: metrics.quizzes_completed,
         modules_finished: metrics.modules_finished,
@@ -45,7 +42,7 @@ export const getCurrentWeeklyReport = async (req, res) => {
       };
     }
 
-    // 3. Format response untuk frontend dengan nama field yang benar
+
     const responseData = {
       week_number: report.week_number || 0,
       week_start_date: report.week_start_date ? 
@@ -53,8 +50,7 @@ export const getCurrentWeeklyReport = async (req, res) => {
       week_end_date: report.week_end_date ? 
         new Date(report.week_end_date).toISOString() : new Date().toISOString(),
       total_study_time_hours: report.total_study_time_hours || 0,
-      // PERHATIAN: Frontend expect "pomodoro_sessions", DB punya "total_pomodoro_sessions"
-      // Gunakan mapping yang konsisten
+
       pomodoro_sessions: report.total_pomodoro_sessions || report.pomodoro_sessions || 0,
       quizzes_completed: report.quizzes_completed || 0,
       modules_finished: report.modules_finished || 0,

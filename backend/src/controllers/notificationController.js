@@ -1,15 +1,10 @@
-// File: backend/src/controllers/notificationController.js
-// Respon-ID: pengecekan_file_30
-
 import { PrismaClient } from '@prisma/client';
 import axios from 'axios';
 
 const prisma = new PrismaClient();
 const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:8000';
 
-// ============================================
-// PERSONAL NOTIFICATION TEMPLATES (ML-Based)
-// ============================================
+
 const PERSONA_NOTIFICATIONS = {
   'consistent_learner': [
     { title: 'Keep Your Streak! 🔥', message: 'You\'ve been consistent this week. Complete one more session to maintain your rhythm.' },
@@ -33,9 +28,7 @@ const PERSONA_NOTIFICATIONS = {
   ]
 };
 
-// ============================================
-// GET: Ambil semua notifikasi user
-// ============================================
+
 export const getNotifications = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -66,9 +59,7 @@ export const getNotifications = async (req, res) => {
   }
 };
 
-// ============================================
-// DELETE: Hapus satu notifikasi
-// ============================================
+
 export const deleteNotification = async (req, res) => {
   try {
     const { notificationId } = req.params;
@@ -84,9 +75,7 @@ export const deleteNotification = async (req, res) => {
   }
 };
 
-// ============================================
-// DELETE: Hapus semua notifikasi user
-// ============================================
+
 export const clearAllNotifications = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -105,9 +94,7 @@ export const clearAllNotifications = async (req, res) => {
   }
 };
 
-// ============================================
-// PATCH: Tandai notifikasi sudah dibaca
-// ============================================
+
 export const markAsRead = async (req, res) => {
   try {
     const { notificationId } = req.params;
@@ -124,9 +111,7 @@ export const markAsRead = async (req, res) => {
   }
 };
 
-// ============================================
-// PATCH: Tandai semua notifikasi sudah dibaca
-// ============================================
+
 export const markAllAsRead = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -143,14 +128,12 @@ export const markAllAsRead = async (req, res) => {
   }
 };
 
-// ============================================
-// POST: Generate notifikasi personal dari ML
-// ============================================
+
 export const generatePersonalNotification = async (req, res) => {
   try {
     const { userId } = req.params;
     
-    // 1. Ambil data user termasuk persona
+
     const user = await prisma.users.findUnique({
       where: { id: userId },
       select: {
@@ -166,7 +149,7 @@ export const generatePersonalNotification = async (req, res) => {
 
     const persona = user.ml_predicted_persona || 'new_learner';
     
-    // 2. Coba panggil ML service untuk notifikasi yang lebih cerdas
+
     let notification;
     try {
       const mlResponse = await axios.post(`${ML_SERVICE_URL}/notification/generate`, {
@@ -186,7 +169,7 @@ export const generatePersonalNotification = async (req, res) => {
       console.log('ML service unavailable, using fallback templates');
     }
 
-    // 3. Fallback: Gunakan template berdasarkan persona
+
     if (!notification) {
       const templates = PERSONA_NOTIFICATIONS[persona] || PERSONA_NOTIFICATIONS['new_learner'];
       const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
@@ -197,7 +180,7 @@ export const generatePersonalNotification = async (req, res) => {
       };
     }
 
-    // 4. Simpan notifikasi ke database
+
     const saved = await prisma.notifications.create({
       data: {
         user_id: userId,

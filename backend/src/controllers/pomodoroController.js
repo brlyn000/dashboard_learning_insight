@@ -1,9 +1,9 @@
-// File: backend/src/controllers/pomodoroController.js
+
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// Simpan sesi pomodoro ke database
+
 const savePomodoroSession = async (req, res) => {
   try {
     const { userId, durationMinutes, journeyId } = req.body;
@@ -15,7 +15,7 @@ const savePomodoroSession = async (req, res) => {
       });
     }
     
-    // Simpan sesi ke database
+
     const session = await prisma.pomodoro_sessions.create({
       data: {
         user_id: userId,
@@ -25,7 +25,7 @@ const savePomodoroSession = async (req, res) => {
       }
     });
     
-    // Update weekly report
+
     const today = new Date();
     const day = today.getDay();
     const diff = today.getDate() - day + (day === 0 ? -6 : 1);
@@ -33,7 +33,7 @@ const savePomodoroSession = async (req, res) => {
     weekStart.setDate(diff);
     weekStart.setHours(0, 0, 0, 0);
     
-    // Cari atau buat weekly report
+
     let weeklyReport = await prisma.weekly_reports.findFirst({
       where: {
         user_id: userId,
@@ -42,7 +42,7 @@ const savePomodoroSession = async (req, res) => {
     });
     
     if (weeklyReport) {
-      // Update existing report
+
       await prisma.weekly_reports.update({
         where: { id: weeklyReport.id },
         data: {
@@ -52,7 +52,7 @@ const savePomodoroSession = async (req, res) => {
         }
       });
     } else {
-      // Create new weekly report
+
       const weekEnd = new Date(weekStart);
       weekEnd.setDate(weekStart.getDate() + 6);
       
@@ -85,7 +85,7 @@ const savePomodoroSession = async (req, res) => {
   }
 };
 
-// Update pomodoro preference (terima/tolak rekomendasi ML)
+
 const updatePomodoroPreference = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -98,7 +98,7 @@ const updatePomodoroPreference = async (req, res) => {
       });
     }
     
-    // Cari user
+
     const user = await prisma.users.findUnique({
       where: { id: userId }
     });
@@ -110,7 +110,7 @@ const updatePomodoroPreference = async (req, res) => {
       });
     }
     
-    // Parse existing config
+
     let pomodoroConfig = {};
     if (user.pomodoro_config && typeof user.pomodoro_config === 'string') {
       try {
@@ -120,7 +120,7 @@ const updatePomodoroPreference = async (req, res) => {
       }
     }
     
-    // Update config
+
     const updatedConfig = {
       ...pomodoroConfig,
       focusTime: focusTime !== undefined ? focusTime : (pomodoroConfig.focusTime || 25),
@@ -130,7 +130,7 @@ const updatePomodoroPreference = async (req, res) => {
       lastUpdated: new Date().toISOString()
     };
     
-    // Simpan ke database
+
     await prisma.users.update({
       where: { id: userId },
       data: {
@@ -154,7 +154,7 @@ const updatePomodoroPreference = async (req, res) => {
   }
 };
 
-// Get pomodoro history
+
 const getPomodoroHistory = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -178,12 +178,12 @@ const getPomodoroHistory = async (req, res) => {
       }
     });
     
-    // Hitung statistik
+
     const totalSessions = sessions.length;
     const totalMinutes = sessions.reduce((sum, session) => sum + session.duration_minutes, 0);
     const avgSessionLength = totalSessions > 0 ? totalMinutes / totalSessions : 0;
     
-    // Group by day (last 7 days)
+
     const last7Days = new Date();
     last7Days.setDate(last7Days.getDate() - 7);
     

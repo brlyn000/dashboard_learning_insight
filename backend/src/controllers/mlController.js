@@ -1,7 +1,4 @@
-/**
- * ML Controller - Complete Version with Notifications
- * UPDATED: Added duplicate check + clear all notifications
- */
+
 
 import { PrismaClient } from '@prisma/client';
 import * as mlService from '../services/mlService.js';
@@ -9,9 +6,7 @@ import { getLatestWeeklyReport } from '../services/weeklyReportService.js';
 
 const prisma = new PrismaClient();
 
-/**
- * Find user by ID (UUID) or Email
- */
+
 const findUser = async (identifier) => {
   if (!identifier) return null;
   if (identifier.includes('@')) {
@@ -24,9 +19,7 @@ const findUser = async (identifier) => {
   });
 };
 
-/**
- * Calculate user features - Diversified dummy data
- */
+
 const calculateUserFeatures = async (userId) => {
   try {
     console.log(`[Feature Calculation] Calculating for userId: ${userId}`);
@@ -174,9 +167,7 @@ const calculateUserFeatures = async (userId) => {
   }
 };
 
-/**
- * POST /api/ml/predict-persona/:userId
- */
+
 export const predictUserPersona = async (req, res) => {
   try {
     const userIdentifier = req.params.userId;
@@ -245,9 +236,7 @@ export const predictUserPersona = async (req, res) => {
   }
 };
 
-/**
- * POST /api/ml/predict-persona-from-weekly/:userId
- */
+
 export const predictUserPersonaFromWeekly = async (req, res) => {
   try {
     const userIdentifier = req.params.userId;
@@ -327,10 +316,7 @@ export const predictUserPersonaFromWeekly = async (req, res) => {
   }
 };
 
-/**
- * POST /api/ml/notification
- * UPDATED: Dengan pengecekan duplikat - hanya 1 notifikasi "Learning Update" per hari per user
- */
+
 export const generateUserNotification = async (req, res) => {
   try {
     const { userId } = req.body;
@@ -347,9 +333,7 @@ export const generateUserNotification = async (req, res) => {
       });
     }
 
-    // ============================================
-    // CEK DUPLIKAT: Apakah sudah ada notifikasi "Learning Update" HARI INI?
-    // ============================================
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -366,7 +350,7 @@ export const generateUserNotification = async (req, res) => {
       }
     });
 
-    // Jika sudah ada notifikasi "Learning Update" hari ini, kembalikan yang existing
+
     if (existingNotification) {
       console.log(`[Generate Notification] ⏭️ Skipped - Already exists for ${user.name} today`);
       return res.json({
@@ -386,9 +370,7 @@ export const generateUserNotification = async (req, res) => {
       });
     }
 
-    // ============================================
-    // GENERATE NOTIFIKASI BARU dari ML Service
-    // ============================================
+
     const userData = {
       user_name: user.name,
       last_activity_date: user.updated_at?.toISOString() || new Date().toISOString(),
@@ -411,7 +393,7 @@ export const generateUserNotification = async (req, res) => {
       });
     }
 
-    // Simpan ke database
+
     try {
       const notification = await prisma.notifications.create({
         data: {
@@ -452,9 +434,7 @@ export const generateUserNotification = async (req, res) => {
   }
 };
 
-/**
- * GET /api/ml/notifications/:userId
- */
+
 export const getUserNotifications = async (req, res) => {
   try {
     const userIdentifier = req.params.userId;
@@ -486,9 +466,7 @@ export const getUserNotifications = async (req, res) => {
   }
 };
 
-/**
- * PATCH /api/ml/notifications/:notificationId/read
- */
+
 export const markNotificationAsRead = async (req, res) => {
   try {
     const { notificationId } = req.params;
@@ -508,10 +486,7 @@ export const markNotificationAsRead = async (req, res) => {
   }
 };
 
-/**
- * DELETE /api/ml/notifications/:userId/clear-all
- * BARU: Hapus semua notifikasi user dari database
- */
+
 export const clearAllNotifications = async (req, res) => {
   try {
     const userIdentifier = req.params.userId;
@@ -521,7 +496,7 @@ export const clearAllNotifications = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Hapus semua notifikasi user dari database
+
     const deleteResult = await prisma.notifications.deleteMany({
       where: { user_id: user.id }
     });
@@ -539,10 +514,7 @@ export const clearAllNotifications = async (req, res) => {
   }
 };
 
-/**
- * DELETE /api/ml/notifications/:notificationId
- * BARU: Hapus satu notifikasi berdasarkan ID
- */
+
 export const deleteNotification = async (req, res) => {
   try {
     const { notificationId } = req.params;
@@ -551,7 +523,7 @@ export const deleteNotification = async (req, res) => {
       return res.status(400).json({ message: 'notificationId is required' });
     }
 
-    // Hapus notifikasi dari database
+
     const deletedNotification = await prisma.notifications.delete({
       where: { id: notificationId }
     });
@@ -566,7 +538,7 @@ export const deleteNotification = async (req, res) => {
   } catch (error) {
     console.error('[Delete Notification Error]:', error);
     
-    // Handle jika notifikasi tidak ditemukan
+
     if (error.code === 'P2025') {
       return res.status(404).json({ 
         message: 'Notification not found',
@@ -579,9 +551,7 @@ export const deleteNotification = async (req, res) => {
 };
 
 
-/**
- * POST /api/ml/insights
- */
+
 export const generateWeeklyInsights = async (req, res) => {
   try {
     const { userId } = req.body;
@@ -670,9 +640,7 @@ export const generateWeeklyInsights = async (req, res) => {
   }
 };
 
-/**
- * POST /api/ml/pomodoro/:userId
- */
+
 export const getPomodoroRecommendation = async (req, res) => {
   try {
     const userIdentifier = req.params.userId;
@@ -730,9 +698,7 @@ export const getPomodoroRecommendation = async (req, res) => {
   }
 };
 
-/**
- * GET /api/ml/health
- */
+
 export const checkMLHealth = async (req, res) => {
   try {
     const result = await mlService.checkMLServiceHealth();

@@ -1,42 +1,39 @@
-// File: backend/src/controllers/dashboardController.js
-// Respon-ID: revisi_warna_persona_calm
-
 import { PrismaClient } from '@prisma/client';
 import * as mlService from '../services/mlService.js';
 
 const prisma = new PrismaClient();
 
-// Mapping persona untuk frontend (SESUAI DENGAN iconMap.js di frontend)
+
 const PERSONA_MAPPING = {
   'consistent_learner': {
     title: 'Consistent Learner',
     desc: 'You have regular study habits with steady progress. You benefit from consistent, moderate-length sessions.',
     icon: 'TrendingUp',
-    themeColor: '#3b82f6'  // Biru Tenang (Tailwind blue-500) - Profesional & Konsisten
+    themeColor: '#3b82f6'
   },
   'fast_learner': {
     title: 'Fast Learner',
     desc: 'You grasp concepts quickly and complete tasks efficiently. Short, intensive sessions work best for you.',
     icon: 'Zap',
-    themeColor: '#eab308'  // Kuning/Oranye Lembut (Tailwind yellow-500) - Berenergi tapi tidak mencolok
+    themeColor: '#eab308'
   },
   'new_learner': {
     title: 'New Learner',
     desc: 'You are building your learning habits. Start with shorter sessions and gradually increase focus time.',
     icon: 'Star',
-    themeColor: '#64748b'  // Abu-abu Biru Tenang (Tailwind slate-500) - Netral & Modern
+    themeColor: '#64748b'
   },
   'reflective_learner': {
     title: 'Reflective Learner',
     desc: 'You prefer deep thinking and thorough understanding. Longer sessions with ample reflection time suit you.',
     icon: 'Brain',
-    themeColor: '#8b5cf6'  // Ungu Tenang (Tailwind violet-500) - Dalam & Bijaksana
+    themeColor: '#8b5cf6'
   }
 };
 
-// Default pomodoro configuration
+
 const DEFAULT_POMODORO = {
-// ... sisa kode di bawah ini tetap sama seperti file asli ...
+
   focusTime: 25,
   restTime: 5,
   longRestTime: 15,
@@ -67,9 +64,9 @@ const getWeeklyQuizAverages = async (userId) => {
   for (let weekOffset = 3; weekOffset >= 0; weekOffset--) {
     const weekStart = getMondayOfWeek(weekOffset);
     const weekEnd = getSundayOfWeek(weekStart);
-    const weekNumber = 4 - weekOffset; // Week 1, 2, 3, 4
+    const weekNumber = 4 - weekOffset;
     
-    // Query exam results for this user in this week
+
     const examResults = await prisma.exam_results.findMany({
       where: {
         exam_registration: {
@@ -107,7 +104,7 @@ const getDashboard = async (req, res) => {
 
     console.log('Fetching dashboard for user:', username);
 
-    // 1. Cari user berdasarkan nama (case insensitive)
+
     const user = await prisma.users.findFirst({
       where: {
         name: {
@@ -141,11 +138,11 @@ const getDashboard = async (req, res) => {
 
     console.log('User found:', user.name, 'ID:', user.id);
 
-    // 2. Persona Data
+
     const personaType = user.ml_predicted_persona || 'new_learner';
     const personaData = PERSONA_MAPPING[personaType] || PERSONA_MAPPING['new_learner'];
 
-    // 3. Pomodoro Configuration
+
     let pomodoroConfig = DEFAULT_POMODORO;
     if (user.pomodoro_config) {
       try {
@@ -158,7 +155,7 @@ const getDashboard = async (req, res) => {
       }
     }
 
-    // 4. Weekly Report Data
+
     const weekStart = getMondayOfWeek(0);
     const weeklyReport = await prisma.weekly_reports.findFirst({
       where: {
@@ -168,7 +165,7 @@ const getDashboard = async (req, res) => {
       orderBy: { created_at: 'desc' },
     });
 
-    // 5. Course Status Calculation
+
     const journeys = await prisma.developer_journeys.findMany({
       include: {
         tutorials: { select: { id: true } },
@@ -224,7 +221,7 @@ const getDashboard = async (req, res) => {
       { name: 'Not Completed', count: notCompletedCount },
     ];
 
-    // 6. Time Spent Data
+
     const weekEnd = getSundayOfWeek(weekStart);
     const pomodoroSessions = await prisma.pomodoro_sessions.findMany({
       where: {
@@ -240,7 +237,7 @@ const getDashboard = async (req, res) => {
       }
     });
 
-    const dailyMinutes = [0, 0, 0, 0, 0, 0, 0]; // Sun to Sat
+    const dailyMinutes = [0, 0, 0, 0, 0, 0, 0];
 
     pomodoroSessions.forEach((session) => {
       const dayIndex = new Date(session.completed_at).getDay();
@@ -257,11 +254,11 @@ const getDashboard = async (req, res) => {
       { name: 'S', fullName: 'Sunday', hours: parseFloat((dailyMinutes[0] / 60).toFixed(1)) },
     ];
 
-    // 7. Quiz Data
+
     const quizChartData = await getWeeklyQuizAverages(user.id);
     console.log('Quiz chart data:', quizChartData);
 
-    // 8. Notifications
+
     const notificationsData = await prisma.notifications.findMany({
       where: { user_id: user.id },
       orderBy: [
@@ -282,7 +279,7 @@ const getDashboard = async (req, res) => {
       color: n.is_read ? 'bg-gray-100' : 'bg-blue-100'
     }));
 
-    // 9. Insights
+
     const insights = [
       {
         id: 1,
@@ -300,7 +297,7 @@ const getDashboard = async (req, res) => {
       }
     ];
 
-    // 10. Response
+
     return res.json({
       success: true,
       user: {

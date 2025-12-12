@@ -1,17 +1,14 @@
-// File: backend/src/index.js
-// Respon-ID: pengecekan_file_31 - COMPLETE WITH NOTIFICATIONS
-
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
-// Import router utama
+
 import apiRouter from './routes/route.js';
 
 const app = express();
 const PORT = 5000;
 
-// ================= MIDDLEWARE =================
+
 app.use(
   cors({
     origin: 'http://localhost:5173',
@@ -23,10 +20,10 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-// ================= API ROUTES =================
+
 app.use('/api', apiRouter);
 
-// ================= HEALTH CHECK =================
+
 app.get('/health', (req, res) => {
   res.json({
     success: true,
@@ -36,7 +33,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-// ================= 404 HANDLER =================
+
 app.use((req, res, next) => {
   res.status(404).json({
     success: false,
@@ -53,7 +50,7 @@ app.use((req, res, next) => {
   });
 });
 
-// ================= ERROR HANDLER =================
+
 app.use((err, req, res, next) => {
   console.error('Server Error:', err.stack);
   if (err.code && err.code.startsWith('P')) {
@@ -70,7 +67,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ================= START SERVER =================
+
 app.listen(PORT, () => {
   console.log(`\n✅ Server running at http://localhost:${PORT}`);
   console.log('='.repeat(60));
