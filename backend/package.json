@@ -7,19 +7,32 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "seed": "node prisma/seed.js",
+    "migrate": "npx prisma migrate dev",
+    "studio": "npx prisma studio",
+    "dev": "nodemon src/index.js",
+    "reset": "npx prisma db push --force-reset && npm run seed",
+    "db:push": "npx prisma db push",
+    "db:seed": "npm run seed",
+    "db:reset": "npm run reset"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
+    "axios": "^1.13.2",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "xlsx": "^0.18.5"
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
+    "nodemon": "^3.1.11",
     "prisma": "^6.19.0"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   }
 }

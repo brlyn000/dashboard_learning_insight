@@ -1,188 +1,263 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
+// File: backend/prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
 }
 
-// ======================================================
-// Prisma Schema untuk Learning Target & AI Learning Insight
-// ======================================================
-
+// ============================================
+// 1. USERS TABLE
+// ============================================
 model users {
-  id                      Int       @id @default(autoincrement())
-  display_name            String? 
-  name                    String?
-  email                   String?   @unique
-  password String
-  phone                   String?
-  user_role               String?
-  user_verification_status Boolean?
-  created_at              DateTime? @default(now())
-  updated_at              DateTime? @updatedAt
-  city                    String?
+  id                      String   @id @default(uuid())
+  name                    String
+  email                   String   @unique
+  password                String
+  user_role               String   @default("student")
+  image_path              String?
+  created_at              DateTime @default(now())
+  updated_at              DateTime @updatedAt
+
+  // Legacy JSON fields
+  ai_persona              Json?
+  pomodoro_config         Json?
+  learning_categories     Json?
   refresh_token           String?
 
-  // Relasi
-  instructor_journeys     developer_journeys[] @relation("InstructorJourneys")
-  reviewer_journeys       developer_journeys[] @relation("ReviewerJourneys")
-  authored_tutorials      developer_journey_tutorials[] @relation("AuthorTutorials")
-  trackings               developer_journey_trackings[]
-  submissions             developer_journey_submissions[] @relation("SubmitterSubmissions")
-  reviewed_submissions    developer_journey_submissions[] @relation("ReviewerSubmissions")
-  completions             developer_journey_completions[]
-  exam_registrations      exam_registrations[] 
+  // 🔹 ML Prediction Results
+  ml_predicted_persona    String? @db.Text
+  ml_confidence           Float?
+  ml_last_prediction_at   DateTime? @db.Timestamptz(6)
+
+  // 🔹 ML-Generated Insights
+  personalized_insight    String? @db.Text
+  learning_recommendation String? @db.Text
+
+  // Relations
+  journeys_as_instructor developer_journeys[]            @relation("instructor")
+  journeys_as_reviewer   developer_journeys[]            @relation("reviewer")
+  trackings              developer_journey_trackings[]
+  submissions            developer_journey_submissions[]
+  completions            developer_journey_completions[]
+  exam_registrations     exam_registrations[]
+  weekly_reports         weekly_reports[]
+  notifications          notifications[]
+  
+  // 🔥 NEW RELATION: Pomodoro Sessions
+  pomodoro_sessions      pomodoro_sessions[]
+
+  @@map("users")
 }
 
+// ============================================
+// 2. WEEKLY REPORTS
+// ============================================
+model weekly_reports {
+  id                      Int      @id @default(autoincrement())
+  user_id                 String
+  week_number             Int
+  week_start_date         DateTime @db.Date
+  week_end_date           DateTime @db.Date
 
+  // Study Metrics
+  total_study_time_hours Float?   @default(0) 
+  total_pomodoro_sessions Int?     @default(0) 
+  avg_session_duration    Float?   @default(0) 
+  total_activities        Int?     @default(0) 
 
+  // Engagement Metrics
+  engagement_score        Float?   @default(0) 
+   
+  created_at              DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime? @default(now()) @db.Timestamptz(6)
+
+  user                    users     @relation(fields: [user_id], references: [id])
+
+  @@map("weekly_reports")
+}
+
+// ============================================
+// 3. NOTIFICATIONS
+// ============================================
+model notifications {
+  id             String   @id @default(uuid())
+  user_id        String
+  title          String
+  message        String   @db.Text
+  priority       String   @default("normal") 
+  is_read        Boolean  @default(false)
+  created_at     DateTime @default(now()) @db.Timestamptz(6)
+
+  user           users @relation(fields: [user_id], references: [id])
+
+  @@map("notifications")
+}
+
+// ============================================
+// 4. DEVELOPER JOURNEYS
+// ============================================
 model developer_journeys {
-  id              Int       @id @default(autoincrement())
-  name            String?
-  summary         String?
-  point           Int?
-  required_point  Int?
-  xp              Int?
-  required_xp     Int?
-  difficulty      String?
-  status          String?
-  created_at      DateTime? @default(now())
-  updated_at      DateTime? @updatedAt
+  id             String    @id @default(uuid())
+  name           String
+  summary        String?   @db.Text
+  difficulty     String
+  description    String?   @db.Text
+  status         String    @default("draft")
+  listed         Boolean   @default(true)
+  instructor_id  String
+  reviewer_id    String?
+  deadline       DateTime?
+  hours_to_study Int?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
 
-  // Foreign Keys
-  instructor_id   Int?
-  reviewer_id     Int?
-  instructor      users? @relation("InstructorJourneys", fields: [instructor_id], references: [id])
-  reviewer        users? @relation("ReviewerJourneys", fields: [reviewer_id], references: [id])
+  // Relations
+  instructor     users                              @relation("instructor", fields: [instructor_id], references: [id])
+  reviewer       users?                             @relation("reviewer", fields: [reviewer_id], references: [id])
+  tutorials      developer_journey_tutorials[]
+  trackings      developer_journey_trackings[]
+  submissions    developer_journey_submissions[]
+  completions    developer_journey_completions[]
+  
+  // 🔥 NEW RELATION: Pomodoro Sessions (Optional link to journey)
+  pomodoro_sessions pomodoro_sessions[]
 
-  // Relasi
-  tutorials       developer_journey_tutorials[]
-  trackings       developer_journey_trackings[]
-  submissions     developer_journey_submissions[]
-  completions     developer_journey_completions[]
+  @@map("developer_journeys")
 }
 
-
-
+// ============================================
+// 5. DEVELOPER JOURNEY TUTORIALS
+// ============================================
 model developer_journey_tutorials {
-  id                    Int       @id @default(autoincrement())
-  developer_journey_id  Int?
-  title                 String?
-  type                  String?
-  content               String?
-  position              Int?
-  status                String?
-  created_at            DateTime? @default(now())
-  updated_at            DateTime? @updatedAt
-  author_id             Int?
+  id                   String    @id @default(uuid())
+  developer_journey_id String
+  title                String
+  type                 String    @default("article")
+  content              String?   @db.Text
+  position             Int       @default(0)
+  status               String    @default("draft")
+  created_at           DateTime  @default(now())
+  updated_at           DateTime  @default(now())
 
-  // Foreign Keys
-  journey   developer_journeys? @relation(fields: [developer_journey_id], references: [id])
-  author    users?              @relation("AuthorTutorials", fields: [author_id], references: [id])
+  // Relations
+  journey              developer_journeys              @relation(fields: [developer_journey_id], references: [id], onDelete: Cascade)
+  trackings            developer_journey_trackings[]
+  exam_registrations   exam_registrations[]
 
-  // Relasi
-  trackings developer_journey_trackings[]
-  submissions developer_journey_submissions[]
-  exam_registrations exam_registrations[]
+  @@map("developer_journey_tutorials")
 }
 
-
-
+// ============================================
+// 6. DEVELOPER JOURNEY TRACKINGS
+// ============================================
 model developer_journey_trackings {
-  id              Int       @id @default(autoincrement())
-  journey_id      Int?
-  tutorial_id     Int?
-  developer_id    Int?
-  status          String?
-  last_viewed     DateTime?
-  first_opened_at DateTime?
+  id              String    @id @default(uuid())
+  journey_id      String
+  tutorial_id     String
+  developer_id    String
+  status          Int       @default(0)
+  last_viewed     DateTime? @default(now())
+  first_opened_at DateTime? @default(now())
   completed_at    DateTime?
+  created_at      DateTime  @default(now())
 
-  // Foreign Keys
-  journey   developer_journeys? @relation(fields: [journey_id], references: [id])
-  tutorial  developer_journey_tutorials? @relation(fields: [tutorial_id], references: [id])
-  developer users? @relation(fields: [developer_id], references: [id])
+  // Relations
+  journey         developer_journeys              @relation(fields: [journey_id], references: [id])
+  tutorial        developer_journey_tutorials     @relation(fields: [tutorial_id], references: [id])
+  user            users                           @relation(fields: [developer_id], references: [id])
+
+  @@map("developer_journey_trackings")
 }
 
-
-
+// ============================================
+// 7. DEVELOPER JOURNEY SUBMISSIONS
+// ============================================
 model developer_journey_submissions {
-  id            Int       @id @default(autoincrement())
-  journey_id    Int?
-  quiz_id       Int?
-  submitter_id  Int?
-  app_link      String?
-  app_comment   String?
-  status        String?
-  reviewer_id   Int?
-  rating        Int?
-  note          String?
-  created_at    DateTime? @default(now())
-  updated_at    DateTime? @updatedAt
+  id           String    @id @default(uuid())
+  journey_id   String
+  submitter_id String
+  status       String    @default("submitted")
+  rating       Int?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @default(now())
 
-  // Foreign Keys
-  journey   developer_journeys? @relation(fields: [journey_id], references: [id])
-  quiz      developer_journey_tutorials? @relation(fields: [quiz_id], references: [id])
-  submitter users? @relation("SubmitterSubmissions", fields: [submitter_id], references: [id])
-  reviewer  users? @relation("ReviewerSubmissions", fields: [reviewer_id], references: [id])
+  // Relations
+  journey      developer_journeys              @relation(fields: [journey_id], references: [id])
+  submitter    users                           @relation(fields: [submitter_id], references: [id])
+
+  @@map("developer_journey_submissions")
 }
 
-
-
+// ============================================
+// 8. DEVELOPER JOURNEY COMPLETIONS
+// ============================================
 model developer_journey_completions {
-  id                    Int       @id @default(autoincrement())
-  user_id               Int?
-  journey_id            Int?
-  created_at            DateTime? @default(now())
-  updated_at            DateTime? @updatedAt
-  enrolling_times       Int?
-  study_duration        Int?
-  avg_submission_rating Float?
+  id         String    @id @default(uuid())
+  user_id    String
+  journey_id String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
 
-  // Foreign Keys
-  user    users?              @relation(fields: [user_id], references: [id])
-  journey developer_journeys? @relation(fields: [journey_id], references: [id])
+  // Relations
+  user       users                           @relation(fields: [user_id], references: [id])
+  journey    developer_journeys              @relation(fields: [journey_id], references: [id])
+
+  @@map("developer_journey_completions")
 }
 
-
-
+// ============================================
+// 9. EXAM REGISTRATIONS
+// ============================================
 model exam_registrations {
-  id             Int       @id @default(autoincrement())
-  exam_module_id Int?
-  tutorial_id    Int?
-  examinees_id   Int?
-  status         String?
-  created_at     DateTime? @default(now())
-  updated_at     DateTime? @updatedAt
-  deadline_at    DateTime?
+  id               String    @id @default(uuid())
+  tutorial_id      String?
+  examinees_id     String
+  status           String    @default("registered")
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @default(now())
+  exam_finished_at DateTime?
 
-  // Foreign Keys
-  tutorial   developer_journey_tutorials? @relation(fields: [tutorial_id], references: [id])
-  examinee   users?                       @relation(fields: [examinees_id], references: [id])
+  // Relations
+  tutorial         developer_journey_tutorials?    @relation(fields: [tutorial_id], references: [id])
+  examinee         users                           @relation(fields: [examinees_id], references: [id])
+  results          exam_results[]
 
-  // Relasi
-  results    exam_results[]
+  @@map("exam_registrations")
 }
 
-
-
+// ============================================
+// 10. EXAM RESULTS
+// ============================================
 model exam_results {
-  id                   Int       @id @default(autoincrement())
-  exam_registration_id Int?
-  total_questions      Int?
-  score                Int?
-  is_passed            Boolean?
-  created_at           DateTime? @default(now())
-  look_report_at       DateTime?
+  id                   String    @id @default(uuid())
+  exam_registration_id String
+  total_questions      Int       @default(20)
+  score                Int
+  is_passed            Boolean   @default(false)
+  created_at           DateTime  @default(now())
 
-  // Foreign Keys
-  exam_registration exam_registrations? @relation(fields: [exam_registration_id], references: [id])
+  // Relations
+  exam_registration    exam_registrations              @relation(fields: [exam_registration_id], references: [id])
+
+  @@map("exam_results")
+}
+
+// ============================================
+// 11. POMODORO SESSIONS (NEW TABLE)
+// ============================================
+model pomodoro_sessions {
+  id               String   @id @default(uuid())
+  user_id          String
+  journey_id       String?
+  duration_minutes Int      @default(25)
+  completed_at     DateTime @default(now()) @db.Timestamptz(6)
+
+  // Relations (Sekarang sudah valid karena ada back-relation di Users & Journeys)
+  user    users               @relation(fields: [user_id], references: [id])
+  journey developer_journeys? @relation(fields: [journey_id], references: [id])
+
+  @@map("pomodoro_sessions")
 }
