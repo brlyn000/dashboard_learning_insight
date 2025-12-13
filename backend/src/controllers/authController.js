@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from '../utils/prisma.js';
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
-// Using singleton prisma from utils
 
 
 const generateAccessToken = (user) => {
