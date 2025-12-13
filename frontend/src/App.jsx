@@ -9,14 +9,18 @@ function App() {
   return (
     <Routes>
       {/* Halaman Login (Tanpa Sidebar) */}
+      <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
 
       {/* Halaman Dalam (Pakai Sidebar & Header) */}
-      <Route path="/" element={<MainLayout />}>
+      <Route path="/dashboard" element={<MainLayout />}>
         <Route index element={<Dashboard />} />
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="my-courses" element={<MyCourses />} />
-        <Route path="course/:id" element={<CourseDetail />} />
+      </Route>
+      <Route path="/my-courses" element={<MainLayout />}>
+        <Route index element={<MyCourses />} />
+      </Route>
+      <Route path="/course/:id" element={<MainLayout />}>
+        <Route index element={<CourseDetail />} />
       </Route>
     </Routes>
   );
