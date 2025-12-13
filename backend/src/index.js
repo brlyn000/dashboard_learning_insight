@@ -6,13 +6,13 @@ import cookieParser from 'cookie-parser';
 import apiRouter from './routes/route.js';
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 
 app.use(
   cors({
-    origin: 'http://localhost:5173',
-    credentials: true,
+    origin: '*',
+    credentials: false,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
   })
