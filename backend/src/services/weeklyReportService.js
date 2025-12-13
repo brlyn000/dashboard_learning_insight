@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../utils/prisma.js';
 
-const prisma = new PrismaClient();
+// Using singleton prisma from utils
 
 
 export const getLatestWeeklyReport = async (userId) => {

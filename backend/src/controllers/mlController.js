@@ -1,10 +1,10 @@
 
 
-import { PrismaClient } from '@prisma/client';
+import prisma from '../utils/prisma.js';
 import * as mlService from '../services/mlService.js';
 import { getLatestWeeklyReport } from '../services/weeklyReportService.js';
 
-const prisma = new PrismaClient();
+// Using singleton prisma from utils
 
 
 const findUser = async (identifier) => {

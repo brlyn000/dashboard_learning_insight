@@ -1,7 +1,7 @@
 
-import { PrismaClient } from '@prisma/client';
+import prisma from '../utils/prisma.js';
 
-const prisma = new PrismaClient();
+// Using singleton prisma from utils
 
 
 const savePomodoroSession = async (req, res) => {

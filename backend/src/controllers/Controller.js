@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+// Using singleton prisma from utils
 
 export const getUsers = async (req, res) => {
     try {

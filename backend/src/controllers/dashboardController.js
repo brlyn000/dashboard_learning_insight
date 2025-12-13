@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../utils/prisma.js';
 import * as mlService from '../services/mlService.js';
 
-const prisma = new PrismaClient();
+// Using singleton prisma from utils
 
 
 const PERSONA_MAPPING = {
