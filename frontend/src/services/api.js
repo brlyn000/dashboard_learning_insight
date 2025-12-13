@@ -1,14 +1,15 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://dashboard-learning-insight-backend.vercel.app/api';
 
+console.log('API_BASE_URL:', API_BASE_URL);
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true,
+  withCredentials: false,
 });
 
 
@@ -35,7 +36,7 @@ api.interceptors.response.use(
       try {
         const refreshResponse = await axios.get(
           `${API_BASE_URL}/auth/refresh`,
-          { withCredentials: true }
+          { withCredentials: false }
         );
         const newToken = refreshResponse.data.token;
         if (newToken) {
