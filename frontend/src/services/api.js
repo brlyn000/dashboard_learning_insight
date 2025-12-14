@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://dashboard-learning-insight-backend.vercel.app/api';
-// Fallback jika env tidak tersedia: import.meta.env.VITE_API_BASE_URL ||
+const API_BASE_URL = 'http://localhost:5000/api';
 
 console.log('API_BASE_URL:', API_BASE_URL);
 
