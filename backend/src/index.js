@@ -11,7 +11,9 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: '*',
+    origin: process.env.NODE_ENV === 'production' 
+      ? ['https://brlyn000-dashboardlearninginsight-e.vercel.app', 'https://brlyn000-dashboardlearninginsight.vercel.app']
+      : '*',
     credentials: false,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
