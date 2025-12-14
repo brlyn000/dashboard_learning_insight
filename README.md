@@ -649,3 +649,9 @@ If this project helped you, please consider giving it a ⭐!
 **Made with ❤️ by the Dashboard Learning Insight Team**
 
 </div>
+
+
+
+
+## Link Model AI/ML
+https://drive.google.com/drive/folders/1lNuX1PeghKcplOTI5ueAxCwGluL61l69?usp=drive_link
