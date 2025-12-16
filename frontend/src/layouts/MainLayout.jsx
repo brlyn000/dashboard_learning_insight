@@ -14,6 +14,7 @@ const MainLayout = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifMenu, setShowNotifMenu] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
 
   const fetchUser = async (username) => {
@@ -292,16 +293,36 @@ const handleClearAllNotifications = async () => {
 
   return (
     <div className="min-h-screen flex bg-[#f3f4f6]">
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
 
-      <aside className="w-[220px] bg-white flex flex-col fixed h-full z-10 border-r border-gray-200">
+      {/* Sidebar */}
+      <aside className={`w-[220px] bg-white flex flex-col fixed h-full z-50 border-r border-gray-200 transition-transform duration-300 lg:translate-x-0 ${
+        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
 
         <div className="p-5 border-b border-gray-100">
-          <div className="flex items-center gap-3">
-            <img src={logo} alt="Nexalar" className="w-8 h-8" />
-            <div>
-              <div className="font-bold text-gray-800 text-lg">Nexalar</div>
-              <div className="text-[10px] text-gray-400 leading-tight">Empowering the Next<br/>Intelligence</div>
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <img src={logo} alt="Nexalar" className="w-8 h-8" />
+              <div>
+                <div className="font-bold text-gray-800 text-lg">Nexalar</div>
+                <div className="text-[10px] text-gray-400 leading-tight">Empowering the Next<br/>Intelligence</div>
+              </div>
             </div>
+            {/* Close button for mobile */}
+            <button
+              onClick={() => setIsSidebarOpen(false)}
+              className="lg:hidden p-1 hover:bg-gray-100 rounded transition"
+              aria-label="Close menu"
+            >
+              <X size={20} className="text-gray-500" />
+            </button>
           </div>
         </div>
 
@@ -325,12 +346,26 @@ const handleClearAllNotifications = async () => {
       </aside>
 
 
-      <div className="flex-1 ml-[220px]">
+      {/* Main Content */}
+      <div className="flex-1 lg:ml-[220px] w-full">
 
-        <div className="flex items-center justify-between px-6 py-4">
-          <h1 className="text-2xl font-bold text-gray-800">{pageTitle}</h1>
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 bg-white lg:bg-transparent border-b lg:border-0">
+          <div className="flex items-center gap-3">
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition"
+              aria-label="Open menu"
+            >
+              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-800">{pageTitle}</h1>
+          </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
 
             <div className="relative">
               <button
@@ -501,7 +536,8 @@ const handleClearAllNotifications = async () => {
         </div>
 
 
-        <main className="px-6 pb-6">
+        {/* Main Content Area */}
+        <main className="px-4 sm:px-6 pb-6">
           <Outlet context={pomodoroData} />
         </main>
       </div>

@@ -24,8 +24,20 @@ const CourseDetail = () => {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [expandedSection, setExpandedSection] = useState(0); 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [animatedProgress, setAnimatedProgress] = useState(0);
+
+  // Handle body scroll when sidebar is open on mobile
+  useEffect(() => {
+    if (isSidebarOpen && window.innerWidth < 1024) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isSidebarOpen]);
 
   useEffect(() => {
     const fetchCourseDetail = async () => {
@@ -182,31 +194,29 @@ const CourseDetail = () => {
         )}
 
         {/* Sidebar Content - Full screen on mobile, sidebar on desktop */}
-        <div 
-          className={`bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex-shrink-0 transition-all duration-500 ease-in-out 
-            lg:sticky lg:top-8 
-            ${
-            isSidebarOpen 
-              ? 'w-full lg:w-[350px] opacity-100 translate-x-0 fixed lg:relative inset-0 lg:inset-auto z-[60] lg:z-40' 
-              : 'w-0 opacity-0 translate-x-full p-0 border-0 absolute right-0 lg:right-0'
-          }`}
-          style={{ zIndex: isSidebarOpen ? 60 : -1 }}
-        >
-          {isSidebarOpen && (
-            <>
-              {/* Mobile overlay */}
-              <div 
-                className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm -z-10" 
-                onClick={() => setIsSidebarOpen(false)}
-              />
-              
-              <div className="w-full lg:w-[350px] h-full lg:h-auto flex flex-col max-h-screen lg:max-h-[calc(100vh-4rem)]"> 
+        {isSidebarOpen && (
+          <>
+            {/* Mobile overlay */}
+            <div 
+              className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[59]" 
+              onClick={() => setIsSidebarOpen(false)}
+            />
+            
+            <div 
+              className={`bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex-shrink-0 transition-all duration-300 ease-in-out
+                fixed lg:sticky lg:top-8 inset-0 lg:inset-auto
+                w-full lg:w-[350px] z-[60] lg:z-40
+                flex flex-col max-h-screen lg:max-h-[calc(100vh-4rem)]
+              `}
+            > 
+              {/* Header */}
               <div className="p-4 sm:p-6 border-b border-gray-100 flex-shrink-0">
                 <div className="flex justify-between items-center mb-4">
                   <div className="flex items-center gap-2 text-primary font-bold text-base sm:text-lg">
                     <button 
                       onClick={() => setIsSidebarOpen(false)} 
                       className="bg-green-50 text-primary p-1.5 rounded-lg hover:bg-primary hover:text-white transition"
+                      aria-label="Close sidebar"
                     >
                       <ChevronRight size={18} className="sm:w-5 sm:h-5" /> 
                     </button>
@@ -228,6 +238,7 @@ const CourseDetail = () => {
                 </div>
               </div>
 
+              {/* Modules List */}
               <div className="divide-y divide-gray-100 flex-1 overflow-y-auto">
                 {course.modules?.map((section, index) => {
                   const completedInSection = section.subModules.filter(m => m.isCompleted).length;
@@ -293,10 +304,9 @@ const CourseDetail = () => {
                   </div>
                 )}
               </div>
-              </div>
-            </>
-          )}
-        </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
