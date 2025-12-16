@@ -102,37 +102,37 @@ const CourseDetail = () => {
   const completedModulesCount = course.modules.reduce((acc, sec) => acc + sec.subModules.filter(m => m.isCompleted).length, 0);
 
   return (
-    <div className="flex flex-col gap-4 animate-fade-in-up relative">
+    <div className="flex flex-col gap-3 sm:gap-4 animate-fade-in-up relative px-2 sm:px-0">
       {/* Back Button */}
       <div>
         <button 
           onClick={() => navigate('/my-courses')} 
-          className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-primary mb-2 transition-colors w-fit"
+          className="flex items-center gap-2 text-xs sm:text-sm font-bold text-gray-500 hover:text-primary mb-2 transition-colors w-fit"
         >
-          <ArrowLeft size={18} /> Back to Courses
+          <ArrowLeft size={16} className="sm:w-[18px] sm:h-[18px]" /> Back to Courses
         </button>
       </div>
 
       {/* Main Container: Gap is strictly controlled based on Sidebar state */}
-      <div className={`flex ${isSidebarOpen ? 'gap-6' : 'gap-0'} relative items-start transition-all duration-500 ease-in-out`}>
+      <div className={`flex flex-col lg:flex-row ${isSidebarOpen ? 'lg:gap-6' : 'lg:gap-0'} gap-4 relative items-start transition-all duration-500 ease-in-out`}>
         
         {/* Main Content Area */}
-        <div className={`flex-1 min-w-0 transition-all duration-500 ${!isSidebarOpen ? 'mr-0' : ''}`}>
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
+        <div className={`flex-1 min-w-0 transition-all duration-500 w-full ${!isSidebarOpen ? 'lg:mr-0' : ''}`}>
+          <div className="bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4 sm:space-y-6">
             {/* Course Header */}
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-3">{course.title}</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">{course.title}</h1>
               
-              {/* Time Info */}
-              <div className="flex items-center gap-4 text-sm text-gray-500 font-medium">
+              {/* Time Info - Responsive grid */}
+              <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 font-medium">
                 <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
-                  <Clock size={16} className="text-primary" />
+                  <Clock size={14} className="text-primary sm:w-4 sm:h-4" />
                   <span>{course.totalHours} hours</span>
                 </div>
                 {course.deadline && (
                   <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
-                    <Calendar size={16} className="text-primary" />
-                    <span>Deadline: {course.deadline}</span>
+                    <Calendar size={14} className="text-primary sm:w-4 sm:h-4" />
+                    <span className="truncate">Deadline: {course.deadline}</span>
                   </div>
                 )}
                 <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
@@ -143,52 +143,72 @@ const CourseDetail = () => {
             </div>
 
             {/* Course Thumbnail */}
-            <div className="w-full aspect-video bg-gray-900 rounded-2xl flex items-center justify-center relative group cursor-pointer overflow-hidden">
+            <div className="w-full aspect-video bg-gray-900 rounded-xl sm:rounded-2xl flex items-center justify-center relative group cursor-pointer overflow-hidden">
               <img 
                 src="https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&w=1000&auto=format&fit=crop" 
                 alt="Course Thumbnail" 
                 className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" 
               />
-              <PlayCircle size={64} className="text-white opacity-80 group-hover:opacity-100 transition transform group-hover:scale-110 relative z-10" />
+              <PlayCircle size={48} className="sm:w-16 sm:h-16 text-white opacity-80 group-hover:opacity-100 transition transform group-hover:scale-110 relative z-10" />
             </div>
 
             {/* Course Description */}
-            <div className="text-gray-600 leading-relaxed text-sm space-y-4">
+            <div className="text-gray-600 leading-relaxed text-sm sm:text-base space-y-4">
               <p>{course.desc}</p>
             </div>
           </div>
         </div>
 
-        {/* Sidebar Toggle Button (Floating Button) */}
+        {/* Sidebar Toggle Button (Floating Button) - Hidden on mobile, shown on desktop */}
         {!isSidebarOpen && (
           <button 
             onClick={() => setIsSidebarOpen(true)}
-            className="fixed right-0 top-1/2 transform -translate-y-1/2 z-50 bg-primary text-white p-3 rounded-l-2xl shadow-lg hover:bg-green-600 transition-all duration-300 flex items-center justify-center cursor-pointer"
+            className="hidden lg:flex fixed right-0 top-1/2 transform -translate-y-1/2 z-50 bg-primary text-white p-3 rounded-l-2xl shadow-lg hover:bg-green-600 transition-all duration-300 items-center justify-center cursor-pointer"
             aria-label="Open Sidebar"
           >
             <List size={24} />
           </button>
         )}
+        
+        {/* Mobile: Show modules button at bottom */}
+        {!isSidebarOpen && (
+          <button 
+            onClick={() => setIsSidebarOpen(true)}
+            className="lg:hidden fixed bottom-6 right-6 z-50 bg-primary text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-all duration-300 flex items-center justify-center cursor-pointer"
+            aria-label="Open Course Content"
+          >
+            <List size={24} />
+          </button>
+        )}
 
-        {/* Sidebar Content */}
+        {/* Sidebar Content - Full screen on mobile, sidebar on desktop */}
         <div 
-          className={`bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex-shrink-0 transition-all duration-500 ease-in-out sticky top-8 ${
+          className={`bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex-shrink-0 transition-all duration-500 ease-in-out 
+            lg:sticky lg:top-8 
+            ${
             isSidebarOpen 
-              ? 'w-[350px] opacity-100 translate-x-0' 
-              : 'w-0 opacity-0 translate-x-full p-0 border-0 absolute right-0'
+              ? 'w-full lg:w-[350px] opacity-100 translate-x-0 fixed lg:relative inset-0 lg:inset-auto z-[60] lg:z-40' 
+              : 'w-0 opacity-0 translate-x-full p-0 border-0 absolute right-0 lg:right-0'
           }`}
-          style={{ zIndex: isSidebarOpen ? 40 : -1 }}
+          style={{ zIndex: isSidebarOpen ? 60 : -1 }}
         >
           {isSidebarOpen && (
-            <div className="w-[350px]"> 
-              <div className="p-6 border-b border-gray-100">
+            <>
+              {/* Mobile overlay */}
+              <div 
+                className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm -z-10" 
+                onClick={() => setIsSidebarOpen(false)}
+              />
+              
+              <div className="w-full lg:w-[350px] h-full lg:h-auto flex flex-col max-h-screen lg:max-h-[calc(100vh-4rem)]"> 
+              <div className="p-4 sm:p-6 border-b border-gray-100 flex-shrink-0">
                 <div className="flex justify-between items-center mb-4">
-                  <div className="flex items-center gap-2 text-primary font-bold text-lg">
+                  <div className="flex items-center gap-2 text-primary font-bold text-base sm:text-lg">
                     <button 
                       onClick={() => setIsSidebarOpen(false)} 
                       className="bg-green-50 text-primary p-1.5 rounded-lg hover:bg-primary hover:text-white transition"
                     >
-                      <ChevronRight size={20} /> 
+                      <ChevronRight size={18} className="sm:w-5 sm:h-5" /> 
                     </button>
                     Course Content
                   </div>
@@ -208,7 +228,7 @@ const CourseDetail = () => {
                 </div>
               </div>
 
-              <div className="divide-y divide-gray-100 max-h-[500px] overflow-y-auto">
+              <div className="divide-y divide-gray-100 flex-1 overflow-y-auto">
                 {course.modules?.map((section, index) => {
                   const completedInSection = section.subModules.filter(m => m.isCompleted).length;
                   const totalInSection = section.subModules.length;
@@ -217,7 +237,7 @@ const CourseDetail = () => {
                     <div key={index}>
                       <button 
                         onClick={() => setExpandedSection(expandedSection === index ? -1 : index)} 
-                        className="w-full flex justify-between items-center p-4 hover:bg-gray-50 font-bold text-gray-800 text-sm border-l-4 border-transparent hover:border-primary transition-all"
+                        className="w-full flex justify-between items-center p-3 sm:p-4 hover:bg-gray-50 font-bold text-gray-800 text-xs sm:text-sm border-l-4 border-transparent hover:border-primary transition-all"
                       >
                         <div className="flex items-center gap-2">
                           <span>{section.title}</span>
@@ -235,23 +255,25 @@ const CourseDetail = () => {
                       </button>
                       
                       {expandedSection === index && (
-                        <div className="bg-gray-50 px-4 py-2 space-y-1 pb-4 animate-fade-in">
+                        <div className="bg-gray-50 px-3 sm:px-4 py-2 space-y-1 pb-4 animate-fade-in">
                           {section.subModules.map((sub, idx) => (
                             <div 
                               key={idx} 
-                              className="flex items-center justify-between gap-3 p-2 rounded-lg hover:bg-white cursor-pointer text-sm text-gray-600 transition border border-transparent hover:border-gray-200"
+                              className="flex items-center justify-between gap-2 sm:gap-3 p-2 rounded-lg hover:bg-white cursor-pointer text-xs sm:text-sm text-gray-600 transition border border-transparent hover:border-gray-200"
                               onClick={() => console.log('Navigate to module:', sub.id)}
                             >
-                              <div className="flex items-center gap-3 overflow-hidden">
-                                {getModuleIcon(sub.type)}
+                              <div className="flex items-center gap-2 sm:gap-3 overflow-hidden flex-1 min-w-0">
+                                <div className="flex-shrink-0">{getModuleIcon(sub.type)}</div>
                                 <span className={`truncate ${sub.isCompleted ? "text-gray-400 line-through" : ""}`}>
                                   {sub.title}
                                 </span>
                               </div>
-                              {sub.isCompleted 
-                                ? <CheckCircle size={16} className="text-primary flex-shrink-0" /> 
-                                : <Circle size={16} className="text-gray-300 flex-shrink-0" />
-                              }
+                              <div className="flex-shrink-0">
+                                {sub.isCompleted 
+                                  ? <CheckCircle size={16} className="text-primary" /> 
+                                  : <Circle size={16} className="text-gray-300" />
+                                }
+                              </div>
                             </div>
                           ))}
                         </div>
@@ -271,7 +293,8 @@ const CourseDetail = () => {
                   </div>
                 )}
               </div>
-            </div>
+              </div>
+            </>
           )}
         </div>
       </div>

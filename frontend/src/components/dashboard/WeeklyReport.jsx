@@ -331,12 +331,12 @@ const WeeklyReport = ({ user }) => {
 
   return (
     <>
-      <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 relative z-10">
+      <div className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 relative z-10">
           
           {/* HEADER */}
-          <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-800">Weekly Learning Report</h2>
-              <p className="text-gray-500 mt-1 text-sm">
+          <div className="mb-6 sm:mb-8">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Weekly Learning Report</h2>
+              <p className="text-gray-500 mt-1 text-xs sm:text-sm">
                   Summary of your progress and AI-driven insights for this week.
                   <br/>
                   <span className="text-xs font-semibold text-gray-400">
@@ -347,72 +347,72 @@ const WeeklyReport = ({ user }) => {
 
 
           {/* METRICS (4 KARTU STATISTIK) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 md:mb-10">
                {/* Total Study Time Card */}
-               <div className="bg-emerald-50 border border-emerald-200 p-6 rounded-2xl flex flex-col justify-between h-40 relative overflow-hidden group">
+               <div className="bg-emerald-50 border border-emerald-200 p-4 sm:p-6 rounded-xl sm:rounded-2xl flex flex-col justify-between h-32 sm:h-40 relative overflow-hidden group">
                  <div className="relative z-10">
-                   <p className="text-emerald-800 font-bold text-sm mb-1">Total Study Time</p>
-                   <h3 className="text-3xl font-extrabold text-emerald-600">
+                   <p className="text-emerald-800 font-bold text-xs sm:text-sm mb-1">Total Study Time</p>
+                   <h3 className="text-2xl sm:text-3xl font-extrabold text-emerald-600">
                      {statsLoading ? '...' : weeklyStats.totalStudy}
                    </h3>
                  </div>
                  <div className="relative z-10 flex items-center gap-1 text-xs font-bold text-emerald-700">
-                   <TrendingUp size={14} />
+                   <TrendingUp size={12} className="sm:w-[14px] sm:h-[14px]" />
                    <span>{weeklyStats.studyTrend}</span>
                  </div>
-                 <Clock className="absolute right-[-10px] bottom-[-10px] w-20 h-20 text-emerald-200 opacity-20 rotate-12" />
+                 <Clock className="absolute right-[-10px] bottom-[-10px] w-16 sm:w-20 h-16 sm:h-20 text-emerald-200 opacity-20 rotate-12" />
                </div>
 
                {/* Pomodoro Sessions Card */}
-               <div className="bg-blue-50 border border-blue-200 p-6 rounded-2xl flex flex-col justify-between h-40 relative overflow-hidden group">
+               <div className="bg-blue-50 border border-blue-200 p-4 sm:p-6 rounded-xl sm:rounded-2xl flex flex-col justify-between h-32 sm:h-40 relative overflow-hidden group">
                  <div className="relative z-10">
-                   <p className="text-blue-800 font-bold text-sm mb-1">Pomodoro Sessions</p>
+                   <p className="text-blue-800 font-bold text-xs sm:text-sm mb-1">Pomodoro Sessions</p>
                    <div className="flex items-baseline gap-1">
-                     <h3 className="text-3xl font-extrabold text-blue-600">
+                     <h3 className="text-2xl sm:text-3xl font-extrabold text-blue-600">
                        {statsLoading ? '...' : weeklyStats.pomodoroCompleted}
                      </h3>
-                     <span className="text-blue-400 font-bold text-sm">
+                     <span className="text-blue-400 font-bold text-xs sm:text-sm">
                        /{weeklyStats.pomodoroTarget}
                      </span>
                    </div>
                  </div>
                  <div className="relative z-10 text-xs text-blue-700 font-medium">Target Recommended</div>
-                 <CheckCircle className="absolute right-[-10px] bottom-[-10px] w-20 h-20 text-blue-200 opacity-20 rotate-12" />
+                 <CheckCircle className="absolute right-[-10px] bottom-[-10px] w-16 sm:w-20 h-16 sm:h-20 text-blue-200 opacity-20 rotate-12" />
                </div>
 
                {/* Quizzes Completed Card */}
-               <div className="bg-orange-50 border border-orange-200 p-6 rounded-2xl flex flex-col justify-between h-40 relative overflow-hidden group">
+               <div className="bg-orange-50 border border-orange-200 p-4 sm:p-6 rounded-xl sm:rounded-2xl flex flex-col justify-between h-32 sm:h-40 relative overflow-hidden group">
                  <div className="relative z-10">
-                   <p className="text-orange-800 font-bold text-sm mb-1">Quizzes Completed</p>
-                   <h3 className="text-3xl font-extrabold text-orange-600">
+                   <p className="text-orange-800 font-bold text-xs sm:text-sm mb-1">Quizzes Completed</p>
+                   <h3 className="text-2xl sm:text-3xl font-extrabold text-orange-600">
                      {statsLoading ? '...' : weeklyStats.quizTaken}
                    </h3>
                  </div>
                  <div className="relative z-10 text-xs text-orange-700 font-medium">
                    Target: {weeklyStats.quizTarget}
                  </div>
-                 <FileText className="absolute right-[-10px] bottom-[-10px] w-20 h-20 text-orange-200 opacity-20 rotate-12" />
+                 <FileText className="absolute right-[-10px] bottom-[-10px] w-16 sm:w-20 h-16 sm:h-20 text-orange-200 opacity-20 rotate-12" />
                </div>
 
                {/* Modules Finished Card */}
-               <div className="bg-purple-50 border border-purple-200 p-6 rounded-2xl flex flex-col justify-between h-40 relative overflow-hidden group">
+               <div className="bg-purple-50 border border-purple-200 p-4 sm:p-6 rounded-xl sm:rounded-2xl flex flex-col justify-between h-32 sm:h-40 relative overflow-hidden group">
                  <div className="relative z-10">
-                   <p className="text-purple-800 font-bold text-sm mb-1">Modules Finished</p>
-                   <h3 className="text-3xl font-extrabold text-purple-600">
+                   <p className="text-purple-800 font-bold text-xs sm:text-sm mb-1">Modules Finished</p>
+                   <h3 className="text-2xl sm:text-3xl font-extrabold text-purple-600">
                      {statsLoading ? '...' : weeklyStats.modulesCompleted}
                    </h3>
                  </div>
                  <div className="relative z-10 text-xs text-purple-700 font-medium">Keep progressing!</div>
-                 <Layers className="absolute right-[-10px] bottom-[-10px] w-20 h-20 text-purple-200 opacity-20 rotate-12" />
+                 <Layers className="absolute right-[-10px] bottom-[-10px] w-16 sm:w-20 h-16 sm:h-20 text-purple-200 opacity-20 rotate-12" />
                </div>
           </div>
 
 
           {/* AI LEARNING INSIGHTS SECTION */}
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-4 sm:mb-6 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Sparkles size={20} className="text-primary" />
-                <h3 className="text-xl font-bold text-gray-800">AI Learning Insights</h3>
+                <Sparkles size={18} className="sm:w-5 sm:h-5 text-primary" />
+                <h3 className="text-base sm:text-xl font-bold text-gray-800">AI Learning Insights</h3>
               </div>
               
               <button
@@ -427,7 +427,7 @@ const WeeklyReport = ({ user }) => {
 
 
           {/* ML INSIGHTS CONTENT */}
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             {/* Loading State */}
             {mlLoading && (
               <div className="flex items-center justify-center py-12 bg-blue-50 rounded-2xl border border-blue-100">
@@ -454,16 +454,16 @@ const WeeklyReport = ({ user }) => {
 
             {/* Success State - ML Insights */}
             {mlInsights && !mlLoading && !mlError && (
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {/* Main Insight Card - DYNAMIC COLORS */}
-                <div className={`p-6 rounded-2xl border ${cardStyles.border} ${cardStyles.background}`}>
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className={`p-3 rounded-xl flex-shrink-0 shadow-md ${cardStyles.iconBox}`}>
-                      <Sparkles className="w-6 h-6 text-white" />
+                <div className={`p-4 sm:p-6 rounded-xl sm:rounded-2xl border ${cardStyles.border} ${cardStyles.background}`}>
+                  <div className="flex items-start gap-3 sm:gap-4 mb-4">
+                    <div className={`p-2 sm:p-3 rounded-xl flex-shrink-0 shadow-md ${cardStyles.iconBox}`}>
+                      <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2 flex-wrap">
-                        <h4 className="font-bold text-lg text-gray-900">
+                        <h4 className="font-bold text-base sm:text-lg text-gray-900">
                           {performanceInfo.emoji} {performanceInfo.label} Performance
                         </h4>
                         <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase ${getBadgeStyles(performanceInfo.color)}`}>
@@ -471,7 +471,7 @@ const WeeklyReport = ({ user }) => {
                         </span>
                       </div>
                       
-                      <p className="text-gray-700 leading-relaxed text-base">
+                      <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
                         {mlInsights.summary || 'Pick a course to begin your journey!'}
                       </p>
                     </div>
@@ -509,26 +509,26 @@ const WeeklyReport = ({ user }) => {
 
                 {/* Recommendations Card */}
                 {(mlInsights.recommendations && mlInsights.recommendations.length > 0) && (
-                  <div className="p-6 rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50">
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 bg-emerald-500 rounded-xl flex-shrink-0 shadow-md">
-                        <TrendingUp className="w-6 h-6 text-white" />
+                  <div className="p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50">
+                    <div className="flex items-start gap-3 sm:gap-4">
+                      <div className="p-2 sm:p-3 bg-emerald-500 rounded-xl flex-shrink-0 shadow-md">
+                        <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                       </div>
-                      <div className="flex-1">
-                        <h4 className="font-bold text-emerald-900 mb-3">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-emerald-900 mb-3 text-sm sm:text-base">
                           🎯 RECOMMENDED ACTIONS
                         </h4>
                         {Array.isArray(mlInsights.recommendations) ? (
-                          <ul className="text-emerald-800 leading-relaxed space-y-2">
+                          <ul className="text-emerald-800 leading-relaxed space-y-2 text-sm sm:text-base">
                             {mlInsights.recommendations.map((rec, idx) => (
                               <li key={idx} className="flex items-start gap-2">
-                                <span className="text-emerald-600 font-bold">•</span>
-                                <span>{rec}</span>
+                                <span className="text-emerald-600 font-bold flex-shrink-0">•</span>
+                                <span className="flex-1">{rec}</span>
                               </li>
                             ))}
                           </ul>
                         ) : (
-                          <p className="text-emerald-800 leading-relaxed">
+                          <p className="text-emerald-800 leading-relaxed text-sm sm:text-base">
                             {mlInsights.recommendation}
                           </p>
                         )}

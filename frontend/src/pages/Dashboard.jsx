@@ -23,33 +23,32 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="space-y-8 animate-fade-in-up relative pb-10"> 
+    <div className="space-y-6 md:space-y-8 animate-fade-in-up relative pb-10 px-2 sm:px-0"> 
         
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch h-auto lg:h-[350px]">
-          <div className="lg:col-span-2 h-full">
+        {/* Persona & Pomodoro Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 items-stretch h-auto lg:h-[350px]">
+          <div className="lg:col-span-2 h-full min-h-[280px] sm:min-h-[320px]">
             <PersonaCard user={user} className="w-full h-full" />
           </div>
-          <div className="h-full">
+          <div className="h-full min-h-[280px] sm:min-h-[320px]">
             <PomodoroCard user={user} />
           </div>
         </div>
 
-
+        {/* Weekly Report */}
         <WeeklyReport user={user} />
 
-
+        {/* Quiz Progress Chart */}
         <div className="w-full">
             <QuizProgressChart data={user.charts.quiz} />
         </div>
 
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Time Spent & Course Completion */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
             <div className="lg:col-span-2">
                 <TimeSpentChart data={user.charts.timeSpent} />
             </div>
             <div>
-
                 <CourseCompletionChart user={user} />
             </div>
         </div>
