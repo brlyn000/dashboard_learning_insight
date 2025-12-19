@@ -245,13 +245,13 @@ const getDashboard = async (req, res) => {
     });
 
     const timeSpentChartData = [
-      { name: 'M', fullName: 'Monday', hours: parseFloat((dailyMinutes[1] / 60).toFixed(1)) },
-      { name: 'T', fullName: 'Tuesday', hours: parseFloat((dailyMinutes[2] / 60).toFixed(1)) },
-      { name: 'W', fullName: 'Wednesday', hours: parseFloat((dailyMinutes[3] / 60).toFixed(1)) },
-      { name: 'T', fullName: 'Thursday', hours: parseFloat((dailyMinutes[4] / 60).toFixed(1)) },
-      { name: 'F', fullName: 'Friday', hours: parseFloat((dailyMinutes[5] / 60).toFixed(1)) },
-      { name: 'S', fullName: 'Saturday', hours: parseFloat((dailyMinutes[6] / 60).toFixed(1)) },
-      { name: 'S', fullName: 'Sunday', hours: parseFloat((dailyMinutes[0] / 60).toFixed(1)) },
+      { name: 'Mon', fullName: 'Monday', hours: parseFloat((dailyMinutes[1] / 60).toFixed(1)) },
+      { name: 'Tue', fullName: 'Tuesday', hours: parseFloat((dailyMinutes[2] / 60).toFixed(1)) },
+      { name: 'Wed', fullName: 'Wednesday', hours: parseFloat((dailyMinutes[3] / 60).toFixed(1)) },
+      { name: 'Thu', fullName: 'Thursday', hours: parseFloat((dailyMinutes[4] / 60).toFixed(1)) },
+      { name: 'Fri', fullName: 'Friday', hours: parseFloat((dailyMinutes[5] / 60).toFixed(1)) },
+      { name: 'Sat', fullName: 'Saturday', hours: parseFloat((dailyMinutes[6] / 60).toFixed(1)) },
+      { name: 'Sun', fullName: 'Sunday', hours: parseFloat((dailyMinutes[0] / 60).toFixed(1)) },
     ];
 
 

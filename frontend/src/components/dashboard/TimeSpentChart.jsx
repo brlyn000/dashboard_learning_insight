@@ -32,8 +32,7 @@ const TimeSpentChart = ({ data }) => (
             axisLine={false} 
             tickLine={false} 
             tick={{fill: '#9ca3af', fontSize: 12}} 
-            dy={10} 
-            tickFormatter={(val) => val.charAt(0)}
+            dy={10}
           />
           <YAxis axisLine={false} tickLine={false} tick={{fill: '#9ca3af', fontSize: 12}} />
           <Tooltip content={<CustomBarTooltip />} cursor={{fill: '#f9fafb'}} />
